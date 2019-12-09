@@ -1,3 +1,5 @@
+<?php
+    echo <<<_BEGIN
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,13 +38,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-                <a class="navbar-brand" href="index.html">Clusterizer</a>
+                <a class="navbar-brand" href="index.php">Clusterizer</a>
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="index.html">Home</a></li>
-                    <li class="active"><a href="training.html">Training</a></li>
-                    <li><a href="testing.html">Testing</a></li>
+                    <li><a href="index.php">Home</a></li>
+                    <li class="active"><a href="training.php">Training</a></li>
+                    <li><a href="testing.php">Testing</a></li>
                 </ul>
             </div>
             <!--/.nav-collapse -->
@@ -58,14 +60,22 @@
 
         <form>
             <div class="form-group">
-                <label for="exampleFormControlFile1">Upload a file!</label>
-                <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                <label for="modelname">Name of the uploaded model:</label>
+                <input type="text" id="modelname">
             </div>
 
             <div class="form-group">
-                <label for="exampleFormControlTextarea1">Type in values!</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <label for="file1">Upload a file of scores:</label>
+                <input type="file" class="form-control-file" id="file1">
             </div>
+
+            <div class="form-group">
+                <label for="textarea">Type in score values:</label>
+                <textarea class="form-control" id="textarea" rows="3"></textarea>
+            </div>
+
+            <input type="submit" value="SUBMIT">
+
         </form>
 
     </div>
@@ -82,6 +92,6 @@
     <script src="../../dist/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
-</body>
-
-</html>
+_BEGIN;
+    echo "</body></html>"
+?>

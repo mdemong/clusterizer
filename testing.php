@@ -1,3 +1,5 @@
+<?php
+    echo <<<_BEGIN
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +12,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Home</title>
+    <title>Training</title>
 
     <!-- Bootstrap core CSS -->
     <link href="bootstrap-3.4.1-dist/css/bootstrap.min.css" rel="stylesheet">
@@ -36,13 +38,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-                <a class="navbar-brand" href="index.html">Clusterizer</a>
+                <a class="navbar-brand" href="index.php">Clusterizer</a>
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="index.html">Home</a></li>
-                    <li><a href="training.html">Training</a></li>
-                    <li><a href="testing.html">Testing</a></li>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="training.php">Training</a></li>
+                    <li class="active"><a href="testing.php">Testing</a></li>
                 </ul>
             </div>
             <!--/.nav-collapse -->
@@ -52,9 +54,16 @@
     <div class="container">
 
         <div class="starter-template">
-            <h1>CLUSTERIZER</h1>
-            <p class="lead"> <br> Katrina Tran | Micah Demong | Gurdev Sihra</p>
+            <h1>Testing</h1>
+            <p class="lead">TEST THE MODEL</p>
         </div>
+
+        <form>
+            <div class="form-group">
+                <label for="file">Upload a file!</label>
+                <input type="file" class="form-control-file" id="file">
+            </div>
+        </form>
 
     </div>
     <!-- /.container -->
@@ -70,6 +79,7 @@
     <script src="../../dist/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
-</body>
 
-</html>
+_BEGIN;
+    echo "</body></html>"
+?>
