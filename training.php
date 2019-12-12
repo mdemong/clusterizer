@@ -58,20 +58,20 @@
             <p class="lead">TRAIN THE MODEL</p>
         </div>
 
-        <form>
+        <form action="training.php" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="modelname">Name of the uploaded model:</label>
-                <input type="text" id="modelname">
+                <input type="text" id="modelname" name="modelname">
             </div>
 
             <div class="form-group">
                 <label for="file1">Upload a file of scores:</label>
-                <input type="file" class="form-control-file" id="file1">
+                <input type="file" class="form-control-file" id="file1" name="file1">
             </div>
 
             <div class="form-group">
                 <label for="textarea">Type in score values:</label>
-                <textarea class="form-control" id="textarea" rows="3"></textarea>
+                <textarea class="form-control" id="textarea" name="textarea" rows="3"></textarea>
             </div>
 
             <input type="submit" value="SUBMIT">
@@ -93,5 +93,64 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
 _BEGIN;
+    
+    require_once 'magic.php';
+    $conn = new mysqli($hn, $un, $pw, $db);
+
+    #check database connection
+    if($conn->connect_error)
+    {
+        die(errorPage());
+    }
+
+    #model name with file upload
+    if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_FILES['file1'])) && (!empty($_FILES['file1']['tmp_name']))))
+	{
+        $type = $_FILES['file1']['type'];
+		if ($type === "text/plain")
+		{
+            enterFile($conn);
+        }
+        else {
+            #incorrect file format
+            echo "<h3>Incorrect file format! Please try again with a .txt file.<h3>";
+        }
+    }
+    
+    #model name with text upload
+    if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_POST['textarea'])) && (!empty($_POST['textarea']))))
+	{
+		enterText($conn);
+	}
+
+    function errorPage()
+	{
+		header("Location:error.php");
+		exit();
+    }
+    
+    function mysql_entities_fix_string($conn, $string)
+	{
+		return htmlentities(mysql_fix_string($conn, $string));
+	}
+
+	function mysql_fix_string($conn, $string)
+	{
+		if (get_magic_quotes_gpc())
+		{
+			$string = stripslashes($string);
+		}
+		return $conn->real_escape_string($string);
+	}
+
+    function enterFile($conn)
+    {
+        $modelname = mysql_entities_fix_string($conn, $_POST['modelname']);
+    }
+
+    function enterText($conn)
+    {
+        $modelname = mysql_entities_fix_string($conn, $_POST['modelname']);
+    }
     echo "</body></html>"
 ?>
