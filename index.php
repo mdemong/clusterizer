@@ -64,6 +64,8 @@
                 <h3>...information about expectation maximization here...<h3>
             <h1>about us</h1>
                 <h3>...information about us here...<h3>
+            <h1>want to try it out?</h1>
+                <h3><a href = "signup.php">sign up here!</a><h3>
         </div>
 
     </div>

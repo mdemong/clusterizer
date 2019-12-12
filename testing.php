@@ -58,11 +58,13 @@
             <p class="lead">TEST THE MODEL</p>
         </div>
 
-        <form>
+        <form action="testing.php" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="file">Upload a file!</label>
-                <input type="file" class="form-control-file" id="file">
+                <label for="filename">Upload a file!</label>
+                <input type="file" class="form-control-file" id="filename" name="filename">
             </div>
+
+            <input type="submit" value="SUBMIT">
         </form>
 
     </div>
