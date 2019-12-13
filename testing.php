@@ -10,9 +10,9 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
+    <link rel="icon" href="https://image.flaticon.com/icons/png/512/139/139690.png">
 
-    <title>Training</title>
+    <title>Testing</title>
 
     <!-- Bootstrap core CSS -->
     <link href="bootstrap-3.4.1-dist/css/bootstrap.min.css" rel="stylesheet">
