@@ -103,8 +103,8 @@ _BEGIN;
         die(errorPage());
     }
 
-    #model name with file upload
-    if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_FILES['file1'])) && (!empty($_FILES['file1']['tmp_name']))))
+    #model name with file upload only
+    if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_FILES['file1'])) && (!empty($_FILES['file1']['tmp_name']))) && (empty($_POST['textarea'])))
 	{
         $type = $_FILES['file1']['type'];
 		if ($type === "text/plain")
@@ -117,11 +117,25 @@ _BEGIN;
         }
     }
     
-    #model name with text upload
-    if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_POST['textarea'])) && (!empty($_POST['textarea']))))
+    #model name with text upload only
+    if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_POST['textarea'])) && (!empty($_POST['textarea']))) && (empty($_FILES['file1']['tmp_name'])))
 	{
 		enterText($conn);
-	}
+    }
+    
+    #model name text and file chosen --> choose file
+    if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_FILES['file1'])) && (!empty($_FILES['file1']['tmp_name']))) && ((isset($_POST['textarea'])) && (!empty($_POST['textarea']))))
+	{
+        $type = $_FILES['file1']['type'];
+		if ($type === "text/plain")
+		{
+            enterFile($conn);
+        }
+        else {
+            #incorrect file format
+            echo "<h3>Incorrect file format! Please try again with a .txt file.<h3>";
+        }
+    }
 
     function errorPage()
 	{

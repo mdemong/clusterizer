@@ -103,6 +103,9 @@ _BEGIN;
 
   function addUser($conn)
   {
+    $preplace = $conn->prepare('INSERT INTO user VALUES(?,?,?,?,?,?)');
+		$preplace->bind_param('ssssss', $name, $username, $email, $salt1, $salt2, $hashpass);
+
     $name = mysql_entities_fix_string($conn, $_POST['inputName']);
     $username = mysql_entities_fix_string($conn, $_POST['inputUsername']);
     $email = mysql_entities_fix_string($conn, $_POST['inputEmail']);
@@ -115,8 +118,7 @@ _BEGIN;
     $salt2 = substr($shuf2, 0, 5);
     $token = hash('ripemd128', '$salt1$password$salt2');
 
-    $queryAddUser = "INSERT INTO user(name, username, email, salt1, salt2, hashpass) VALUES ('$name', '$username', '$email', '$salt1', '$salt2', '$token')";
-		$addUser = $conn->query($queryAddUser);
+    $addUser = $preplace->execute();
 		if (!$addUser)
 		{
 			# user could not be inserted
@@ -125,7 +127,7 @@ _BEGIN;
     else {
 			echo "<script>alert(\"You are signed up! Go back to the main page.\");</script>";
     }
-    #$addUser->close();
+    $addUser->close();
   }
 
   #$createTable->close();
