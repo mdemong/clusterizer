@@ -2,8 +2,6 @@ import numpy as np
 import random
 
 fileText = '"'		# User file
-dimension = 0		# Dimension type of values inputted
-clusterAmount = 0;		# Amount of Clusters
 
 clusters = []		# total amount for each cluster
 clusterNum = []     # total number of data points in each cluster
@@ -93,12 +91,11 @@ def km_init(fileText, dim, num):
     print
     updateCentroids(clusterAmount)
     updateDataPoints()
-    
 
+# This method carries out the algorithm by utilizing the updateDataPoints method
+# Since the k-init method assigns the initial data points to the clusters, this method will start off with updating centroids
+#def K-Means(clusterAmount):
 
-# This method carries out the algorithm
-
-#def K-Means:
 
 # Eucilidian - this distance calculus is independent of dimensions.
 # For example, a model with 4 dimensional points will have its distance computes as: d(a,b) = sqrt( (a1-b1)^2 + (a2-b2)^2 + (a3-b3)^2 + (a4-b4)^2 )
@@ -147,9 +144,12 @@ def addPointCluster(p, c):
     print "Point ", p, " was added to cluster ", c, ". This is the clusters array: ", clusters, " and the numbers array: ", clusterNum
     print
 
+# This method updates the Data Points attached cluster based on which cluster is the closest
+# By looping through all the centroids in the clusters, the data points compare the distance and choose the closest centroid to attach to
 def updateDataPoints():
     # Assign centroids to data points using a the data_cluster 2 dimensional array
     index = 0
+    
     for x in data_cluster:
         dp_cluster_combo = data_cluster[index]
         point = dp_cluster_combo[0]
@@ -157,12 +157,14 @@ def updateDataPoints():
         # Outputs index of centroid this point is closest to and creates an array to hold this tuple
         c_index = compareCluster(point)
         cluster_assign = [point, c_index]
+        #print "here ", point
         
         # Calls a method that adds the data points value to the clusters array with an index based on the assigned centroid
         addPointCluster(point, c_index)
         
         # Adds the data point as a key of the point and value of the  centroid's index in the array
         data_cluster[index] = cluster_assign
+        index = index + 1
     
     print "This is the updated data_cluster: ", data_cluster
     print
@@ -196,7 +198,7 @@ def updateCentroids(num):
     print
 
 print "Hello World"
-str = "1 2 \n 3 4 \n 5 6\n"
-di = 2
+str = "1 2 5 \n 3 4 13 \n 5 6 \n 12 45 \n 24 255\n"
+di = 3
 ca = 2
 km_init(str, di, ca)
