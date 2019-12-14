@@ -52,29 +52,66 @@
     </nav>
 
     <div class="container">
-
         <div class="starter-template">
+            <img class="d-block mx-auto mb-4" src="https://image.flaticon.com/icons/png/512/139/139690.png" alt="" width="100s" height="100">
             <h1>Training</h1>
-            <p class="lead">TRAIN THE MODEL</p>
+            <p class="lead">Enter a name for your model and choose what type of algorithm you would like to train your model with. You must choose the dimensions for your model. You can then either upload a file to train your model OR enter values into the text box. Do not do both. If you do both, we will take the values from your file. Please format your file/values in textbox by having a tuple/line and separate values in the tuple with a space.</p>
         </div>
 
         <form action="training.php" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="modelname">Name of the uploaded model:</label>
-                <input type="text" id="modelname" name="modelname">
+                <div class="text-center">
+                <label for="modelname">Model Name:</label>
+                <input type="text" id="modelname" name="modelname" required>
+                </div>
             </div>
 
             <div class="form-group">
+                <div class="text-center">
+                <label for="alg">Algorithm: </label>
+                <select class="custom-select d-block w-100" id="alg" name="alg" required>
+                    <option value="">Choose...</option>
+                    <option>k-means clustering</option>
+                    <option>expectation maximization</option>
+                </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="text-center">
+                <label for="alg">Dimensions: </label>
+                <select class="custom-select d-block w-100" id="alg" name="alg" required>
+                    <option value="">Choose...</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+                </div>
+            </div>
+
+            <hr class="mb-4">
+
+            <div class="form-group">
+                <div class="col-md-6 mb-3">
                 <label for="file1">Upload a file of scores:</label>
                 <input type="file" class="form-control-file" id="file1" name="file1">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                <label for="textarea">Type in score values:</label>
+                <textarea class="form-control" id="textarea" name="textarea" style="resize:none" rows="3"></textarea>
+                </div>
             </div>
+
+            <br><br><br><br><br>
+            <hr class="mb-4">
 
             <div class="form-group">
-                <label for="textarea">Type in score values:</label>
-                <textarea class="form-control" id="textarea" name="textarea" rows="3"></textarea>
+                <div class="text-center">
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
+                </div>
             </div>
-
-            <input type="submit" value="SUBMIT">
 
         </form>
 
