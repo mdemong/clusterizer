@@ -3,7 +3,7 @@ import random
 
 fileText = '"'		# User file
 dimension = 0		# Dimension type of values inputted
-clusterNum = 0;		# Amount of Clusters
+clusterAmount = 0;		# Amount of Clusters
 
 clusters = []		# total amount for each cluster
 clusterNum = []     # total number of data points in each cluster
@@ -24,11 +24,13 @@ data_points = []	# List containing all the data points
 # INPUT fileText (String)    - Text of the user uploaded file
 # INPUT dim (Integer)        - dimension of data points in the file
 # INPUT clusterAmount (Integer) - amount of clusters the user defined
-def km_init(fileText, dim, clusterAmount):
+def km_init(fileText, dim, num):
     dimension = dim
-    max = 6
-    min = 1
+    clusterAmount = num
     
+    max = float(fileText[0])
+    min = float(fileText[0])
+
     # File Text is split into data points separated by array
     splitLine = fileText.split("\n")
     print(splitLine)
@@ -36,7 +38,6 @@ def km_init(fileText, dim, clusterAmount):
     for y in splitLine:
         dataPointInt = []
         dataPointString = y.split(" ")
-        print(dataPointString)
         for x in dataPointString:
             if(x != ''):
                 val = float(x)
@@ -48,53 +49,64 @@ def km_init(fileText, dim, clusterAmount):
         # Append data point to list of data points
         if(len(dataPointInt)!= 0):
             data_points.append(dataPointInt)
-            print("Data Point Int: ", dataPointInt, "\n")
-    print("--------------------------------")
-
+    print "----------------------------------------------------------"
+    print(data_points)
+    print "----------------------------------------------------------"
+    
     # Generate centroids for the amount of clusters defined by the user
     for c in range(clusterAmount):
+        # Array holding the centroid point
         c_data_point = []
-        # Sets the total value of all the data points assigned to a centroid as [0,0,..] for each dimension
+        
+        # Array holding the the total value of all the data points assigned to a centroid as [0,0,..] for each dimension
         cluster_total_data_point = []
+        
         for i in range(dimension):
+            # Adds randomized centroid points for each centroid
             c_data_point.append(random.randrange(min, max))
+            
+            # Initializes the array with 0 because the total data point values haven't been used and assigned to clusters
             cluster_total_data_point.append(0.0)
-        centroids.append(c_data_point)
+        
+        # Initializes each amount of data points attached to a cluster to 0
         clusterNum.append(0)
+        centroids.append(c_data_point)
         clusters.append(cluster_total_data_point)
+    print
+    print "This is centroids array: ", centroids
+    print
 
     # Assign centroids to data points using a the data_cluster 2 dimensional array
-    index = 0;
     for p in data_points:
-        # Outputs index of centroid this point is closes to
+        
+        # Outputs index of centroid this point is closest to and creates an array to hold this tuple
         c_index = compareCluster(p)
         cluster_assign = [p, c_index]
         
-        # Add the data points value to the clusters array with an index based on the assigned centroid
+        # Calls a method that adds the data points value to the clusters array with an index based on the assigned centroid
         addPointCluster(p, c_index)
-        
-        print("\n\n This is the assigned cluster for a data point: ", cluster_assign)
-        
+
         # Adds the data point as a key of the point and value of the  centroid's index in the array
         data_cluster.append(cluster_assign)
-        index = index+1
+
+    print "This is the initialized data_cluster: ", data_cluster
+    print
+    updateCentroids(clusterAmount)
+    updateDataPoints()
     
-    for x in data_cluster:
-        print("\n Data Point, Cluster: ")
-        print(x)
-    print(data_cluster)
 
 
 # This method carries out the algorithm
 
 #def K-Means:
-    # Since all the clusters have been assigned in the init, the average of the clusters must be computed for each centroid
 
 # Eucilidian - this distance calculus is independent of dimensions.
 # For example, a model with 4 dimensional points will have its distance computes as: d(a,b) = sqrt( (a1-b1)^2 + (a2-b2)^2 + (a3-b3)^2 + (a4-b4)^2 )
 # INPUT p1, p2: Points to compare the Eucilidian distance between
+# OUTPUT: Distance between the two points
 def km_distance(p1, p2):
     total = 0
+    
     # Allows selection for both data points as arrays
     for x, y in zip(p1, p2):
         total += np.square((x-y))
@@ -102,6 +114,7 @@ def km_distance(p1, p2):
 
 # This method compares the distance between a point and all of the Centroids in the centroids array
 # INPUT p: Point to compare with all the centroids
+# OUTPUT: Index of the centroid the point is closest to
 def compareCluster(p):
     dist = km_distance(p, centroids[0])
     centroid = 0;
@@ -114,29 +127,75 @@ def compareCluster(p):
         index = index + 1
     return centroid
 
-# This method computes the average of all the data points assigned and assigns this value to the centroid
-#def updateCentroid(c):
-
+# This method assigns a point to the designated cluster along with incrementing the amount of data points attached to the specific cluster
+# INPUT p: Point to attached to cluster
+# INPUT c: Index of the centroid value to be attached to
 def addPointCluster(p, c):
+    
+    # Extracts the cluster's centroid points at this value
     clust_t_dp = clusters[c]
+    
+    # Increments the amount of data points attached to a cluster
     clusterNum[c] = clusterNum[c] + 1
-    
-    print p
-    print clust_t_dp
-    
+
+    # Adds each data point's dimensional point to the cluster's corelating point EX. p = [2, 4] and c = [3, 5]  >> c = [5, 9]
     index = 0
     for dp, cl in zip(p, clust_t_dp):
-        print("This is the aftermath of adding the values ", cl, " and ", dp, " value:" ,cl)
         clust_t_dp[index] = cl + dp
         index = index+1
     
-    print("For point", p, "this is the total value of the cluster at ", c, ": ", clust_t_dp)
-    print("This is the clusters array: ", clusters, " and the numbers array: ", clusterNum)
-    print()
-    print()
+    print "Point ", p, " was added to cluster ", c, ". This is the clusters array: ", clusters, " and the numbers array: ", clusterNum
+    print
 
+def updateDataPoints():
+    # Assign centroids to data points using a the data_cluster 2 dimensional array
+    index = 0
+    for x in data_cluster:
+        dp_cluster_combo = data_cluster[index]
+        point = dp_cluster_combo[0]
+        
+        # Outputs index of centroid this point is closest to and creates an array to hold this tuple
+        c_index = compareCluster(point)
+        cluster_assign = [point, c_index]
+        
+        # Calls a method that adds the data points value to the clusters array with an index based on the assigned centroid
+        addPointCluster(point, c_index)
+        
+        # Adds the data point as a key of the point and value of the  centroid's index in the array
+        data_cluster[index] = cluster_assign
+    
+    print "This is the updated data_cluster: ", data_cluster
+    print
 
-print("Hello World")
+# This method computes the average of all the data points assigned and assigns this value to the centroid
+# Since all the clusters have been assigned in the init or the k-means function, the average of the clusters must be computed for each centroid
+# INPUT num: Cluster Amount
+def updateCentroids(num):
+    print
+    print "The centroids array: ", centroids, "  The clusterTotal array: ", clusters, " The current amount: ", clusterNum
+    print
+    for i in range(num):
+        currentCentroid = centroids[i]
+        currentTotal = clusters[i]
+        currentNum = clusterNum[i]
+        index = 0
+        for a, b in zip(currentCentroid, currentTotal):
+            print "The current Centroid is ", a, " and the current point total is ", b
+            if(currentNum != 0):
+                average = float((a + b)/currentNum)
+            else:
+                average = 0
+            currentCentroid[index] = average
+            print "The average of this value placed into the centroid is ", currentCentroid[index]
+            currentTotal[index] = 0
+            index = index+1
+            print
+        clusterNum[i] = 0
+    print
+    print "The centroids array: ", centroids, "  The clusterTotal array: ", clusters, " The current amount: ", clusterNum
+    print
+
+print "Hello World"
 str = "1 2 \n 3 4 \n 5 6\n"
 di = 2
 ca = 2
