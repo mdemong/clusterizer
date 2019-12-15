@@ -50,6 +50,9 @@ def km_init(fileText, dim, num):
     print "----------------------------------------------------------"
     print(data_points)
     print "----------------------------------------------------------"
+
+    print "max: ", max
+    print "min: ", min
     
     # Generate centroids for the amount of clusters defined by the user
     for c in range(clusterAmount):
@@ -89,12 +92,64 @@ def km_init(fileText, dim, num):
 
     print "This is the initialized data_cluster: ", data_cluster
     print
-    updateCentroids(clusterAmount)
-    updateDataPoints()
+    KMeans(clusterAmount)
+    
+
 
 # This method carries out the algorithm by utilizing the updateDataPoints method
 # Since the k-init method assigns the initial data points to the clusters, this method will start off with updating centroids
-#def K-Means(clusterAmount):
+def KMeans(clusterAmount):
+    ogCentroids =[]
+    
+    # Keep the original centroid values
+    for a in centroids:
+        copy = []
+        for p in a:
+            copy.append(p)
+        ogCentroids.append(copy)
+
+    # Since the k_init method initialized the data points, this must be done outside a loop
+    updateCentroids(clusterAmount)
+
+    index = 0
+    # While the original centroids and the updated centroids are not the same, the algorithm will continue to find new clusters for the data points
+    while(index < 290):
+        check =checkOG(ogCentroids)
+        print(check)
+        ogCentroids = []
+        print "Current data clustera", data_cluster
+        if(check == False):
+            # Update the data points with the new centroids
+            updateDataPoints()
+            # Keep the original centroid values
+            for a in centroids:
+                copy = []
+                for p in a:
+                    copy.append(p)
+                ogCentroids.append(copy)
+
+            # Call method to update the centroids
+            updateCentroids(clusterAmount)
+            index = index+1
+            print
+            print "The current index is: ", index
+        else:
+            break
+    print "This is the final data_cluster: ", data_cluster
+    print "These are the final centroid values: ", centroids
+
+# This method compares an array with the current centroids array
+# INPUT og: Array to be compared with the centroids array
+# OUTPUT: True if the arrays are the same, False if the arrays are different
+def checkOG(og):
+    index = 0
+    print ("Orignal centroid array: ",og)
+    for b in centroids:
+        print(og[index] , "  ", b)
+        if(og[index] != b):
+            return False
+        index = index+1
+    return True
 
 
 # Eucilidian - this distance calculus is independent of dimensions.
@@ -105,8 +160,9 @@ def km_distance(p1, p2):
     total = 0
     
     # Allows selection for both data points as arrays
-    for x, y in zip(p1, p2):
-        total += np.square((x-y))
+    index = 0
+    for y in p2:
+        total += np.square((p1[index]-p2[index]))
     return np.sqrt(total)
 
 # This method compares the distance between a point and all of the Centroids in the centroids array
@@ -140,7 +196,7 @@ def addPointCluster(p, c):
     for dp, cl in zip(p, clust_t_dp):
         clust_t_dp[index] = cl + dp
         index = index+1
-    
+    print
     print "Point ", p, " was added to cluster ", c, ". This is the clusters array: ", clusters, " and the numbers array: ", clusterNum
     print
 
@@ -165,7 +221,7 @@ def updateDataPoints():
         # Adds the data point as a key of the point and value of the  centroid's index in the array
         data_cluster[index] = cluster_assign
         index = index + 1
-    
+    print
     print "This is the updated data_cluster: ", data_cluster
     print
 
@@ -173,22 +229,22 @@ def updateDataPoints():
 # Since all the clusters have been assigned in the init or the k-means function, the average of the clusters must be computed for each centroid
 # INPUT num: Cluster Amount
 def updateCentroids(num):
-    print
-    print "The centroids array: ", centroids, "  The clusterTotal array: ", clusters, " The current amount: ", clusterNum
-    print
+    #print
+    #print "The centroids array: ", centroids, "  The clusterTotal array: ", clusters, " The current amount: ", clusterNum
+    #print
     for i in range(num):
         currentCentroid = centroids[i]
         currentTotal = clusters[i]
         currentNum = clusterNum[i]
         index = 0
         for a, b in zip(currentCentroid, currentTotal):
-            print "The current Centroid is ", a, " and the current point total is ", b
+            #print "The current Centroid is ", a, " and the current point total is ", b
             if(currentNum != 0):
                 average = float((a + b)/currentNum)
             else:
-                average = 0
+                average = currentCentroid[index]
             currentCentroid[index] = average
-            print "The average of this value placed into the centroid is ", currentCentroid[index]
+            #print "The average of this value placed into the centroid is ", currentCentroid[index]
             currentTotal[index] = 0
             index = index+1
             print
@@ -198,7 +254,7 @@ def updateCentroids(num):
     print
 
 print "Hello World"
-str = "1 2 5 \n 3 4 13 \n 5 6 \n 12 45 \n 24 255\n"
+str = "1 2 5 \n 3 4 13 \n 1 32 45 \n 5 3 6 \n 233 3 255\n 1233 1111113 211155\n 2222233 222223 222255\n 23444443 55553 5555255\n 1 2 5 \n 3 4 13 \n 1 32 45 \n 5 3 6 \n 233 3 255\n 1233 1111113 211155\n 2222233 222223 222255\n 23444443 55553 5555255\n 1 2 5 \n 3 4 13 \n 1 32 45 \n 5 3 6 \n 233 3 255\n 1233 1111113 211155\n 2222233 222223 222255\n 23444443 55553 5555255\n 1 2 5 \n 3 4 13 \n 1 32 45 \n 5 3 6 \n 233 3 255\n 1233 1111113 211155\n 2222233 222223 222255\n 23444443 55553 5555255\n "
 di = 3
-ca = 2
+ca = 3
 km_init(str, di, ca)
