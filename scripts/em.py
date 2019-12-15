@@ -86,7 +86,7 @@ def expectation_maximization(k, points, distributions=[]):
     
     print("Ended on iteration ", iteration)
     table = np.concatenate((points, prob_mtx), axis=1)
-    return distributions, prob_mtx, points, table
+    return distributions, table
 
 
 # Using mean with difference 1e-6 as suggested in:
@@ -96,7 +96,7 @@ def expectation_maximization(k, points, distributions=[]):
 # would be a more accurate heuristic.
 def significant_mean_change(old_means, new_means):
 
-    MINIMUM_CHANGE = 1e-6
+    MINIMUM_CHANGE = 1e-8
 
     for i, _ in enumerate(old_means):
         normalized_diff = abs(sum((old_means[i] - new_means[i]) / old_means[i]))
@@ -175,7 +175,7 @@ def point_cluster_probability(point, cluster, distributions):
     for dist in distributions:
         denom += dist['weight'] * multivariate_normal.logpdf(point, mean=dist['mean'], cov=dist['cov'])
 
-    # if(denom == 0): return 1
+    if(denom == 0): return 0
 
     return (num / denom)
 
@@ -205,12 +205,27 @@ def maximization(prob_mtx, points):
 
 def maximize_mean(resp, prob_mtx, i, points):
     weights=prob_mtx[:,i]
-    return np.average(points, axis=0, weights=prob_mtx[:,i]) / resp
+    return np.average(points, axis=0, weights=weights)
 
 
 def maximize_cov(resp, prob_mtx, i, points):
+    # k = len(points[0])
+    # weights = prob_mtx[:,i]
+
+    # sum = np.zeros((k,k))
+    # for j, weight in enumerate(weights):
+    #     diff = (points[j] - mean)
+    #     sum = sum + weight * np.transpose(diff) * diff
+
+    # EPS = 10e-6
+    # result = np.divide(sum, resp)
+    # result = result + EPS * np.identity(result.shape[1])
+    
+    # return result
+    EPS = 10e-6
+    weights = prob_mtx[:,i]
+    return (np.cov(points, rowvar=False, aweights=weights) + EPS) / resp
     # return np.average(np.outer(diff, diff), axis=0, weights=prob_mtx[:,i]) / resp
-    return np.cov(points, rowvar=False, aweights=prob_mtx[:,i]) / resp
 
 
 # TODO: Create function to convert numpy arrays to json-serializable python lists

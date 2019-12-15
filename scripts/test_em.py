@@ -31,12 +31,12 @@ def test_em():
 
 # Tests that the algorithm converges to two distinct Gaussians.
 def test_em_normals():
-    sample1 = multivariate_normal.rvs(mean = (10, 20, 30), size=2000)
-    sample2 = multivariate_normal.rvs(mean = (13, 23, 33), size=2000)
+    sample1 = multivariate_normal.rvs(mean = (10, 20, 30), cov=10, size=100)
+    sample2 = multivariate_normal.rvs(mean = (139, 230, 0), cov=20, size=100)
     total_sample = np.concatenate((sample1, sample2))
     # pprint(total_sample)
     result = em.expectation_maximization(2, total_sample)
-    pprint(result[1])
+    pprint(result)
     assert False
 
 
