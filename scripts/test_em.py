@@ -23,9 +23,13 @@ def test_input_to_array():
 
 
 def test_em():
-    result = em.expectation_maximization(DIST_COUNT, test_points)
+    result = em.expectation_maximization(DIST_COUNT, em.input_to_array(magic.stri))
     pprint(result)
-    assert False
+    # assert False
+
+
+def test_em_normals():
+    pass
 
 
 def test_init_dist():

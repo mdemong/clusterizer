@@ -85,7 +85,7 @@ def expectation_maximization(k, points, distributions=[]):
 
     
     print("Ended on iteration ", iteration)
-    table = np.concatenate(points, prob_mtx, axis=1)
+    table = np.concatenate((points, prob_mtx), axis=1)
     return distributions, prob_mtx, points, table
 
 
@@ -169,13 +169,13 @@ def point_cluster_probability(point, cluster, distributions):
     if(len(distributions) == 0):
         raise ValueError("There must be at least one distribution")
 
-    num = cluster['weight'] * multivariate_normal.pdf(point, mean=cluster['mean'], cov=cluster['cov'])
+    num = cluster['weight'] * multivariate_normal.logpdf(point, mean=cluster['mean'], cov=cluster['cov'])
     denom = 0
 
     for dist in distributions:
-        denom += dist['weight'] * multivariate_normal.pdf(point, mean=dist['mean'], cov=dist['cov'])
+        denom += dist['weight'] * multivariate_normal.logpdf(point, mean=dist['mean'], cov=dist['cov'])
 
-    if(denom == 0): return 0
+    # if(denom == 0): return 1
 
     return (num / denom)
 
@@ -204,6 +204,7 @@ def maximization(prob_mtx, points):
 
 
 def maximize_mean(resp, prob_mtx, i, points):
+    weights=prob_mtx[:,i]
     return np.average(points, axis=0, weights=prob_mtx[:,i]) / resp
 
 
