@@ -9,6 +9,7 @@
 from pprint import pprint
 import em
 import numpy as np
+from scipy.stats import multivariate_normal
 import magic
 
 test_points = [[1.27,50.367,100.4], [2, 60.2, 300], [-5, 74, 534], [7, 0, 470]]
@@ -28,8 +29,15 @@ def test_em():
     # assert False
 
 
+# Tests that the algorithm converges to two distinct Gaussians.
 def test_em_normals():
-    pass
+    sample1 = multivariate_normal.rvs(mean = (10, 20, 30), size=2000)
+    sample2 = multivariate_normal.rvs(mean = (13, 23, 33), size=2000)
+    total_sample = np.concatenate((sample1, sample2))
+    # pprint(total_sample)
+    result = em.expectation_maximization(2, total_sample)
+    pprint(result[1])
+    assert False
 
 
 def test_init_dist():
