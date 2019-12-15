@@ -28,40 +28,37 @@
 </head>
 
 <body>
-
     <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.php"> Clusterizer</a>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.php">Clusterizer</a>
-            </div>
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="index.php">Home</a></li>
-                    <li class="signed-in"><a href="training.php">Training</a></li>
-                    <li class="signed-in"><a href="testing.php">Testing</a></li>
-                    <li><a href="about.php">About Us</a></li>
-                    <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="index.php" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Options</a>
-                        <div class="dropdown-menu" aria-labelledby="dropdown01">
-                            <a class="dropdown-item" href="signin.php">Sign In</a>
-                            <a class="dropdown-item" href="signin.php">Log Out</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <!--/.nav-collapse -->
+            </button>
         </div>
+    <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="index.php">Home</a></li>
+            <li><a href="training.php">Training</a></li>
+            <li><a href="testing.php">Testing</a></li>
+            <li><a href="about.php">About Us</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">User Options
+                <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="signin.php">Sign In</a></li>
+                    <li><a href="logout.php">Log Out</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!--/.nav-collapse -->
+    </div>
     </nav>
 
     <div class="container">
-
         <div class="starter-template">
+            <img class="d-block mx-auto mb-4" src="https://image.flaticon.com/icons/png/512/139/139690.png" alt="" width="100" height="100">
             <h1>CLUSTERIZER</h1>
             <h3> <br>Micah Demong | Gurdev Sihra | Katrina Tran</h3>
         </div>
@@ -73,10 +70,8 @@
             <h1>want to try it out?</h1>
                 <h3><a href = "signup.php">sign up here!</a><h3>
         </div>
-
     </div>
     <!-- /.container -->
-
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -89,6 +84,9 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
 
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 _BEGIN;
-    echo "</body></html>"
+    echo "</body></html>";
 ?>

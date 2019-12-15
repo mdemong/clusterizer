@@ -78,9 +78,11 @@ _BEGIN;
   $createTable = $conn->query($queryCreateUserTable);
 	if (!$createTable)
 	{
-		# table could not be created
+    # table could not be created
+    #$createTable->close();
 		die(errorPage());
-	}
+  }
+  #$createTable->close();
 
   if(((isset($_POST['inputName'])) && (!empty($_POST['inputName']))) && ((isset($_POST['inputUsername'])) && (!empty($_POST['inputUsername']))) && ((isset($_POST['inputEmail'])) && (!empty($_POST['inputEmail']))) && ((isset($_POST['inputPassword'])) && (!empty($_POST['inputPassword']))))
   {
@@ -146,6 +148,7 @@ _BEGIN;
 		    if (!$addUser)
 		    {
           # user could not be inserted
+          #$addUser->close();
           echo "<script>alert(\"Something went wrong! Please try signing up again.\");</script>";
         }
         else {
@@ -160,7 +163,6 @@ _BEGIN;
     }
   }
 
-  #$createTable->close();
 	$conn->close();
   echo "</html>";
 ?>
