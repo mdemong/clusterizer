@@ -1,4 +1,58 @@
 <?php
+    require_once 'magic.php';
+    $conn = new mysqli($hn, $un, $pw, $db);
+
+    #check database connection
+    if($conn->connect_error)
+    {
+        die(errorPage());
+    }
+
+    if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW']))
+	{
+		$username = mysql_entities_fix_string($conn, $_SERVER['PHP_AUTH_USER']);
+		$password = mysql_entities_fix_string($conn, $_SERVER['PHP_AUTH_PW']);
+
+		$querySelect = "SELECT * FROM user WHERE username = '$username'";
+		$result = $conn->query($querySelect);
+		if (!$result)
+		{
+			# query select failed
+			die("Invalid username or password.");
+		}
+		else if($result->num_rows)
+		{
+            $row = $result->fetch_array(MYSQLI_ASSOC);
+            $result->close();
+			$salt1 = $row['salt1'];
+			$salt2 = $row['salt2'];
+			$token = hash('ripemd128', '$salt1$password$salt2');
+			if ($token == $row['hashpass'])
+			{
+                session_start();
+                $_SESSION['username'] = $username;
+                $_SESSION['password'] = $password;
+                $_SESSION['name'] = $row['name'];
+                echo "<br><br><br><h1>Hello ".$row['name'].", you are now logged in!</h1>";
+                die ("<p><a href=training.php>Continue to the training page here.</a></p>");            
+            }
+			else
+			{
+				die("Invalid username or password.");
+			}
+		}
+		else
+		{
+			die("Invalid username or password.");
+		}
+	}
+	else
+	{
+		header('WWW-Authenticate: Basic realm="Restricted Section"');
+		header('HTTP/1.0 401 Unauthorized');
+		die("Invalid username or password.");
+	}
+
     echo <<<_BEGIN
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +82,6 @@
 </head>
 
 <body>
-
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -37,38 +90,22 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
-                </button>
+          </button>
                 <a class="navbar-brand" href="index.php">Clusterizer</a>
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="index.php">Home</a></li>
-                    <li class="signed-in"><a href="training.php">Training</a></li>
-                    <li class="signed-in"><a href="testing.php">Testing</a></li>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="training.php">Training</a></li>
+                    <li><a href="testing.php">Testing</a></li>
                     <li><a href="about.php">About Us</a></li>
-                    <li><a href="signin.php">Sign In</a></li>
+                    <li class="active"><a href="signin.php">Sign In</a></li>
                 </ul>
             </div>
             <!--/.nav-collapse -->
         </div>
     </nav>
 
-    <div class="container">
-
-        <div class="starter-template">
-            <h1>CLUSTERIZER</h1>
-            <h3> <br>Micah Demong | Gurdev Sihra | Katrina Tran</h3>
-        </div>
-        <div>
-            <h1>k-means clustering</h1>
-                <h3>...information about k-means clustering here...<h3>
-            <h1>expectation maximization</h1>
-                <h3>...information about expectation maximization here...<h3>
-            <h1>want to try it out?</h1>
-                <h3><a href = "signup.php">sign up here!</a><h3>
-        </div>
-
-    </div>
     <!-- /.container -->
 
 
@@ -84,5 +121,27 @@
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
 
 _BEGIN;
-    echo "</body></html>"
+    
+    function errorPage()
+	{
+		header("Location:error.php");
+		exit();
+    }
+
+    function mysql_entities_fix_string($conn, $string)
+	{
+		return htmlentities(mysql_fix_string($conn, $string));
+	}
+
+	function mysql_fix_string($conn, $string)
+	{
+		if (get_magic_quotes_gpc())
+		{
+			$string = stripslashes($string);
+		}
+		return $conn->real_escape_string($string);
+	}
+    
+    $conn->close();
+    echo "</body></html>";
 ?>

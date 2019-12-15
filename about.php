@@ -37,15 +37,15 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
-                </button>
+          </button>
                 <a class="navbar-brand" href="index.php">Clusterizer</a>
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="index.php">Home</a></li>
-                    <li class="signed-in"><a href="training.php">Training</a></li>
-                    <li class="signed-in"><a href="testing.php">Testing</a></li>
-                    <li><a href="about.php">About Us</a></li>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="training.php">Training</a></li>
+                    <li><a href="testing.php">Testing</a></li>
+                    <li class="active"><a href="about.php">About Us</a></li>
                     <li><a href="signin.php">Sign In</a></li>
                 </ul>
             </div>
@@ -57,15 +57,16 @@
 
         <div class="starter-template">
             <h1>CLUSTERIZER</h1>
-            <h3> <br>Micah Demong | Gurdev Sihra | Katrina Tran</h3>
+            <h3> <br> Micah Demong | Gurdev Sihra | Katrina Tran</h3>
         </div>
         <div>
-            <h1>k-means clustering</h1>
-                <h3>...information about k-means clustering here...<h3>
-            <h1>expectation maximization</h1>
-                <h3>...information about expectation maximization here...<h3>
-            <h1>want to try it out?</h1>
-                <h3><a href = "signup.php">sign up here!</a><h3>
+            <h1>about us</h1><br>
+                <h2 class="text-center">Micah Demong</h2>
+                    <h3>...information about Micah here...<h3><br>
+                <h2 class="text-center">Gurdev Sihra</h2>
+                    <h3>...information about Gurdev here...<h3><br>
+                <h2 class="text-center">Katrina Tran</h2>
+                    <h3>...information about Katrina here...<h3><br>
         </div>
 
     </div>
