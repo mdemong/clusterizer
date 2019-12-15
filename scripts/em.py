@@ -189,13 +189,13 @@ def maximization(prob_mtx, points):
     # scalar value: sum of all total responsibilities
     total_resp = np.sum(responsibilities)
 
-    maxed_means = max
 
     for i in range(k):
         resp = responsibilities[i]
         new_dist = dict()
         new_dist['weight'] = resp / total_resp
-        # new_dist['mean']
+        new_dist['mean'] = maximize_mean(resp, prob_mtx, i, points)
+        new_dist['cov'] = maximize_cov(resp, prob_mtx, i, points)
 
         dists.append(new_dist)
 
@@ -205,6 +205,10 @@ def maximization(prob_mtx, points):
 def maximize_mean(resp, prob_mtx, i, points):
     return np.average(points, axis=0, weights=prob_mtx[:,i]) / resp
 
-# def maximize_cov():
+
+def maximize_cov(resp, prob_mtx, i, points):
+    # return np.average(np.outer(diff, diff), axis=0, weights=prob_mtx[:,i]) / resp
+    return np.cov(points, rowvar=False, aweights=prob_mtx[:,i]) / resp
+
 
 # TODO: Create function to convert numpy arrays to json-serializable python lists

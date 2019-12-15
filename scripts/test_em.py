@@ -11,7 +11,8 @@ import em
 import numpy as np
 
 test_points = [[1.27,50.367,100.4], [2, 60.2, 300], [-5, 74, 534], [7, 0, 470]]
-test_distributions = em.init_random_distributions(2, test_points)
+DIST_COUNT = 2
+test_distributions = em.init_random_distributions(DIST_COUNT, test_points)
 
 
 def test_init_dist():
@@ -39,10 +40,17 @@ def test_point_clust_prob():
 def test_maximization():
     dists = em.maximization(em.expectation(test_distributions, test_points), test_points)
     pprint(dists)
-    # assert False
+    assert False
 
 
 def test_max_mean():
-    mean = em.maximize_mean(1.0/3, em.expectation(test_distributions, test_points), 0, test_points)
+    mean = em.maximize_mean(1 / DIST_COUNT, em.expectation(test_distributions, test_points), 0, test_points)
     pprint(mean)
+    # assert False
+
+
+def test_max_cov():
+    mtx = em.expectation(test_distributions, test_points)
+    cov = em.maximize_cov(1 / DIST_COUNT, mtx, 0, test_points)
+    pprint(cov)
     # assert False
