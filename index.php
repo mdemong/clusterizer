@@ -46,7 +46,13 @@
                     <li class="signed-in"><a href="training.php">Training</a></li>
                     <li class="signed-in"><a href="testing.php">Testing</a></li>
                     <li><a href="about.php">About Us</a></li>
-                    <li><a href="signin.php">Sign In</a></li>
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="index.php" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User Options</a>
+                        <div class="dropdown-menu" aria-labelledby="dropdown01">
+                            <a class="dropdown-item" href="signin.php">Sign In</a>
+                            <a class="dropdown-item" href="signin.php">Log Out</a>
+                        </div>
+                    </li>
                 </ul>
             </div>
             <!--/.nav-collapse -->
