@@ -9,10 +9,23 @@
 from pprint import pprint
 import em
 import numpy as np
+import magic
 
 test_points = [[1.27,50.367,100.4], [2, 60.2, 300], [-5, 74, 534], [7, 0, 470]]
 DIST_COUNT = 2
 test_distributions = em.init_random_distributions(DIST_COUNT, test_points)
+
+
+def test_input_to_array():
+    arr = em.input_to_array(magic.stri)
+    pprint(arr)
+    # assert False
+
+
+def test_em():
+    result = em.expectation_maximization(DIST_COUNT, test_points)
+    pprint(result)
+    assert False
 
 
 def test_init_dist():
@@ -40,7 +53,7 @@ def test_point_clust_prob():
 def test_maximization():
     dists = em.maximization(em.expectation(test_distributions, test_points), test_points)
     pprint(dists)
-    assert False
+    # assert False
 
 
 def test_max_mean():

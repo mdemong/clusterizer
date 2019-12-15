@@ -1,6 +1,7 @@
 from scipy.stats import multivariate_normal
 import numpy as np
 from pprint import pprint as pprint
+import io
 
 ## Expectation Maximization with Gaussian Mixture Models
 ## Micah Demong
@@ -31,17 +32,9 @@ from pprint import pprint as pprint
 
 # TODO: make sure dimensions are consistent.
 
-# TODO: define function signature
 # This function takes input from PHP and converts it to a convenient format
-def read_input():
-
-    
-    # Assuming 2 distributions (i.e. binary classification)
-    DIST_COUNT = 2
-    # TODO: actual data input from PHP
-    temp_points = np.array(1, 2, 3)
-
-    expectation_maximization(DIST_COUNT, temp_points)
+def input_to_array(str):
+    return np.genfromtxt(io.StringIO(str), delimiter=' ')
 
 
 # Performs the Expectation Maximization algorithm as described in:
@@ -69,11 +62,16 @@ def expectation_maximization(k, points, distributions=[]):
     new_means = [mean * ARBITRARY_MULTIPLIER for mean in old_means]
 
     # Probability matrix for each data point in each cluster.
-    prob_mtx = np.zeros(len(points), k)
+    prob_mtx = np.zeros((len(points), k))
+
+    MAX_ITERATION = 200
+    iteration = 0
 
     # Alternate between E and M step until change is negligable
     while(significant_mean_change(old_means, new_means)):
         old_means = new_means
+        iteration += 1
+        print("Starting iteration ", iteration)
 
         # E step: Compute probabilities needed in M step, based on
           # current estimates of the distribution parameters
@@ -84,8 +82,11 @@ def expectation_maximization(k, points, distributions=[]):
         distributions = maximization(prob_mtx, points)
 
         new_means = get_means(distributions)
-        
-    return []
+
+    
+    print("Ended on iteration ", iteration)
+    table = np.concatenate(points, prob_mtx, axis=1)
+    return distributions, prob_mtx, points, table
 
 
 # Using mean with difference 1e-6 as suggested in:
@@ -114,7 +115,7 @@ def init_random_distributions(count, points):
     # TODO: this function could be improved, perhaps by random sampling
 
     dimension = len(points[0])
-    print(dimension)
+    # print(dimension)
 
     # gives an array [x_1-avg, x_2-avg, ..., x_n-avg]
     point_avg = np.mean(points, axis=0)
@@ -146,7 +147,7 @@ def init_random_distributions(count, points):
         # tempcov = np.cov(np.random.default_rng().random(size=(dimension, dimension)))
         # new_dist['cov'] = tempcov * np.transpose(tempcov)
         new_dist['cov'] = np.cov(np.transpose(points))
-        print(new_dist['cov'])
+        # print(new_dist['cov'])
 
         new_dist['weight'] = 1 / count
         dists.append(new_dist)
