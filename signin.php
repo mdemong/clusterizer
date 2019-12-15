@@ -1,4 +1,5 @@
 <?php
+    session_unset();
     require_once 'magic.php';
     $conn = new mysqli($hn, $un, $pw, $db);
 

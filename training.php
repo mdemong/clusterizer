@@ -1,4 +1,4 @@
-<?php    
+<?php
     require_once 'magic.php';
     $conn = new mysqli($hn, $un, $pw, $db);
 
@@ -86,21 +86,21 @@
                         <label for="alg">Algorithm: </label>
                         <select class="custom-select d-block w-100" id="alg" name="alg" required>
                             <option value="">Choose...</option>
-                            <option>k-means clustering</option>
-                            <option>expectation maximization</option>
+                            <option value = "0">k-means clustering</option>
+                            <option value = "1">expectation maximization</option>
                         </select>
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <div class="text-center">
-                        <label for="alg">Dimensions: </label>
-                        <select class="custom-select d-block w-100" id="alg" name="alg" required>
+                        <label for="dim">Dimensions: </label>
+                        <select class="custom-select d-block w-100" id="dim" name="dim" required>
                             <option value="">Choose...</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                            <option value = "2">2</option>
+                            <option value = "3">3</option>
+                            <option value = "4">4</option>
+                            <option value = "5">5</option>
                         </select>
                         </div>
                     </div>
@@ -140,25 +140,37 @@
             <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
             <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
 _BEGIN;
+        
+
 
         #model name with file upload only
-        if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_FILES['file1'])) && (!empty($_FILES['file1']['tmp_name']))) && (empty($_POST['textarea'])))
+        if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_FILES['file1'])) && (!empty($_FILES['file1']['tmp_name']))) && (empty($_POST['textarea']))
+           )
         {
+            
             $type = $_FILES['file1']['type'];
             if ($type === "text/plain")
             {
-                enterFile($conn);
+                    enterFile($conn);
+                    $option = $_POST['alg'];
+                    $dimesnion = int($option);
+                    $dimOpt = $_POST['dim'];
+                
+   
             }
             else {
                 #incorrect file format
                 echo "<h3>Incorrect file format! Please try again with a .txt file.<h3>";
+                session_unset();
+                echo "<br><br><br><h1>Please <a href='signin.php'>click here</a> to log in.</h1>";
             }
         }
    
         #model name with text upload only
         if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_POST['textarea'])) && (!empty($_POST['textarea']))) && (empty($_FILES['file1']['tmp_name'])))
         {
-            enterText($conn);
+
+            enterText($conn, );
         }
     
         #model name text and file chosen --> choose file
@@ -172,10 +184,14 @@ _BEGIN;
             else {
                 #incorrect file format
                 echo "<h3>Incorrect file format! Please try again with a .txt file.<h3>";
+                #
+                session_unset();
+                echo "<br><br><br><h1>Please <a href='signin.php'>click here</a> to log in.</h1>";
             }
         }
     }
     else {
+        session_unset();
         echo "<br><br><br><h1>Please <a href='signin.php'>click here</a> to log in.</h1>";
     }
 
@@ -201,13 +217,87 @@ _BEGIN;
 
     function enterFile($conn)
     {
-        $modelname = mysql_entities_fix_string($conn, $_POST['modelname']);
+        $fileText = file_get_contents($_FILES['file1']['tmp_name'], FALSE, NULL, 0);
+        $text = mysql_entities_fix_string($conn, $fileText);
+        
+        $arr = explode('\n', $text);
+        echo "$check";
+        $check = checkFile($arr);
+        if($check == TRUE){
+            inputDB($conn, $text);
+        }else{
+            #incorrect file format
+            echo "<h3>The file uploaded does not match the specified dimension type. Please sign in again and input the correct file.<h3>";
+            session_unset();
+            echo "<br><br><br><h1>Please <a href='signin.php'>click here</a> to log in.</h1>";
+        }
+        
     }
 
     function enterText($conn)
     {
-        $modelname = mysql_entities_fix_string($conn, $_POST['modelname']);
+        $fileText = mysql_entities_fix_string($conn,$_POST['textarea']);
+       
+        $arr = explode('\r\n', $fileText);
+        $check = checkFile($arr);
+        if($check == TRUE){
+            $arr = explode('\r', $fileText);
+            $str = implode("", $arr);
+            inputDB($conn, $str);
+        }else{
+            #incorrect file format
+            echo "<h3>The text entered does not match the specified dimension type. Please sign in again and input the correct file.<h3>";
+            session_unset();
+            echo "<br><br><br><h1>Please <a href='signin.php'>click here</a> to log in.</h1>";
+        }
+        
     }
+    
+    # If the enterFile and enterText methods return a valid string, then the values can be sumitted to the DB if there are no errors
+    function inputDB($conn, $fileText)
+    {
+        $modelname = mysql_entities_fix_string($conn, $_POST['modelname']);
+        $dimension = (int)$_POST['dim'];
+        $algorithm = (int)$_POST['alg'];
+        $username = $_SESSION['username'];
+        
+        echo "$modelname   $dimension   $algorithm  $username";
+
+        $preplace = $conn->prepare('INSERT INTO userFiles VALUES(?,?,?)');
+        $preplace->bind_param('ssi', $username, $modelname, $dimension);
+
+        $result = $preplace->execute();
+        if($result){
+            
+        }else{
+            #incorrect file format
+            echo "<h3>The text entered does not match the specified dimension type. Please sign in again and input the correct file.<h3>";
+            session_unset();
+            echo "<br><br><br><h1>Please <a href='signin.php'>click here</a> to log in.</h1>";
+        }
+        $preplace->close();
+    }
+    
+    function checkFile($fileText)
+    {
+        $dimension = (int)$_POST['dim'];
+        foreach($fileText as $data) {
+            // Splits file into array separated by spaces >> Should contain each value in point
+            $result = explode(" ", $data);
+            if(count($result) == $dimension){
+                foreach($result as $num){
+                    if(!is_numeric($num)){
+                        return FALSE;
+                    }
+                }
+            }else{
+                $length = count($result);
+                return FALSE;
+            }
+        }
+        return TRUE;
+    }
+    
     $conn->close();
     echo "</body></html>";
 ?>
