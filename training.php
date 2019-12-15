@@ -278,6 +278,8 @@ _BEGIN;
         $preplace->close();
     }
     
+    
+    
     function checkFile($fileText)
     {
         $dimension = (int)$_POST['dim'];
