@@ -31,6 +31,7 @@ import io
 # https://docs.scipy.org/doc/numpy/reference/generated/numpy.matrix.html
 
 # TODO: make sure dimensions are consistent.
+# TODO: clean up print statements
 
 # This function takes input from PHP and converts it to a convenient format
 def input_to_array(str):
@@ -126,7 +127,6 @@ def init_random_distributions(count, points):
     # This selection is also kind of arbitrary
     MAX_RAND_COV_ARR = point_avg / 4
 
-    # TODO: redo covariance matrix init, if needed?
     # Results in an n x n covariance matrix
     # MAX_RANDOM_COV = MAX_RAND_COV_ARR * np.eye(dimension)
     # cov = np.cov(points)
@@ -180,7 +180,6 @@ def point_cluster_probability(point, cluster, distributions):
     return (num / denom)
 
 
-# TODO: define function signature
 def maximization(prob_mtx, points):
     k = len(prob_mtx[0])
     dists = []
@@ -224,7 +223,7 @@ def maximize_cov(resp, prob_mtx, i, points):
     # return result
     EPS = 10e-6
     weights = prob_mtx[:,i]
-    return (np.cov(points, rowvar=False, aweights=weights) + EPS) / resp
+    return (np.cov(points, rowvar=False, aweights=weights) + EPS)
     # return np.average(np.outer(diff, diff), axis=0, weights=prob_mtx[:,i]) / resp
 
 
