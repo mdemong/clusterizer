@@ -80,6 +80,13 @@
                         <input type="text" id="modelname" name="modelname" required>
                         </div>
                     </div>
+                            
+                    <div class="form-group">
+                        <div class="text-center">
+                        <label for="clusters">Cluster Amount:</label>
+                        <input type="text" id="clusters" name="clusters" required>
+                        </div>
+                    </div>
         
                     <div class="form-group">
                         <div class="text-center">
@@ -147,22 +154,20 @@ _BEGIN;
         if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_FILES['file1'])) && (!empty($_FILES['file1']['tmp_name']))) && (empty($_POST['textarea']))
            )
         {
-            
-            $type = $_FILES['file1']['type'];
-            if ($type === "text/plain")
-            {
+            $number = $_POST['clusters'];
+            $num = mysql_entities_fix_string($conn, $number);
+            print "number: $num ";
+            if(is_numeric($num)){
+                $type = $_FILES['file1']['type'];
+                if ($type === "text/plain")
+                {
                     enterFile($conn);
                     $option = $_POST['alg'];
                     $dimesnion = int($option);
                     $dimOpt = $_POST['dim'];
-                
-   
-            }
-            else {
-                #incorrect file format
-                echo "<h3>Incorrect file format! Please try again with a .txt file.<h3>";
-                session_unset();
-                echo "<br><br><br><h1>Please <a href='signin.php'>click here</a> to log in.</h1>";
+                    
+                    
+                }
             }
         }
    
@@ -258,16 +263,17 @@ _BEGIN;
     {
         $modelname = mysql_entities_fix_string($conn, $_POST['modelname']);
         $dimension = (int)$_POST['dim'];
-        $algorithm = (int)$_POST['alg'];
         $username = $_SESSION['username'];
         
         echo "$modelname   $dimension   $algorithm  $username";
 
         $preplace = $conn->prepare('INSERT INTO userFiles VALUES(?,?,?)');
         $preplace->bind_param('ssi', $username, $modelname, $dimension);
-
+        
         $result = $preplace->execute();
         if($result){
+            echo " added into database";
+           // computeAlg($fileText, );
             
         }else{
             #incorrect file format
@@ -278,6 +284,28 @@ _BEGIN;
         $preplace->close();
     }
     
+    
+    function computeAlg($fileText)
+    {
+        $algorithm = (int)$_POST['alg'];
+        $number = $_POST['clusters'];
+        $dimension = $_POST['dim'];
+        $combine = $fileText." ZZZ ".$dimension." ZZZ ".$number;
+        if($algorithm == 0){
+            $PATH_TO_SCRIPT = "scripts/k-means.py";
+            // There also exists an escapeshellcmd() function.
+            $command = escapeshellcmd('python ' // . dirname(__DIR__) . '/'
+                                      . $PATH_TO_SCRIPT . " \"" . $combine . "\"");
+            $output = [];
+            $retcode = -1;
+            echo "$combine<br>";
+            echo "$command<br>";
+            exec($command, $output, $retcode);
+            if($retcode !== 0) echo "Error $retcode<br>";
+            echo implode("<br>",$output);
+            //echo $pyout;
+        }
+    }
     
     
     function checkFile($fileText)

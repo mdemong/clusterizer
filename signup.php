@@ -82,6 +82,19 @@ _BEGIN;
     #$createTable->close();
 		die(errorPage());
   }
+    
+    $queryCreateUserTable = "CREATE TABLE IF NOT EXISTS userFiles(
+    username VARCHAR(32) NOT NULL,
+    modelname VARCHAR(32) NOT NULL,
+    PRIMARY KEY(username, modelname),
+    dimension INTEGER NOT NULL);";
+    
+    $createTable = $conn->query($queryCreateUserTable);
+    if (!$createTable)
+    {
+        # table could not be created
+        die(errorPage());
+    }
   #$createTable->close();
 
   if(((isset($_POST['inputName'])) && (!empty($_POST['inputName']))) && ((isset($_POST['inputUsername'])) && (!empty($_POST['inputUsername']))) && ((isset($_POST['inputEmail'])) && (!empty($_POST['inputEmail']))) && ((isset($_POST['inputPassword'])) && (!empty($_POST['inputPassword']))))
