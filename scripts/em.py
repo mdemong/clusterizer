@@ -5,7 +5,7 @@ from pprint import pprint as pprint
 #       `pip install scipy`
 #       `pip install numpy` 
 #       if you have not already installed numpy and scipy.
-# I'm using numpy v1.17.
+# I'm using numpy v1.17 and scipy v1.3.3
 
 # When using numeric values, it is recommended to use numpy arrays for efficiency. 
 # See https://stackoverflow.com/a/994010
@@ -47,6 +47,7 @@ def expectation_maximization(k, points, distributions=[]):
     if(distributions == []):
         distributions = init_random_distributions(k, points)
 
+    # We're using means as a heuristic to know when to stop
     old_means = get_means(distributions)
 
     # Using an arbitrary multiplier to ensure we enter loop
@@ -54,10 +55,12 @@ def expectation_maximization(k, points, distributions=[]):
     ARBITRARY_MULTIPLIER = 1.1
     new_means = [mean * ARBITRARY_MULTIPLIER for mean in old_means]
 
+    # Probability matrix for each data point in each cluster.
+    prob_mtx = np.zeros(len(points), k)
+
     # Alternate between E and M step until change is negligable
     while(significant_mean_change(old_means, new_means)):
         old_means = new_means
-        # TODO: modify 'changed' based on exp. and max. function outputs
 
         # E step: Compute probabilities needed in M step, based on
           # current estimates of the distribution parameters
@@ -70,13 +73,12 @@ def expectation_maximization(k, points, distributions=[]):
         new_means = get_means(distributions)
     return []
 
+
 # Using mean with difference 1e-6 as suggested in:
-# Analysis of stopping critera for the EM algorithm, Abbi et al.
+# "Analysis of stopping critera for the EM algorithm", Abbi et al.
 #
 # Using this for simplicity of implementation, even though using variance 
 # would be a more accurate heuristic.
-#
-#
 def significant_mean_change(old_means, new_means):
 
     MINIMUM_CHANGE = 1e-6
@@ -91,7 +93,7 @@ def significant_mean_change(old_means, new_means):
 
 
 def get_means(dist_list): 
-    return [dist.means() for dist in dist_list]
+    return [dist['mean'] for dist in dist_list]
 
 
 def init_random_distributions(count, points):
@@ -116,9 +118,8 @@ def init_random_distributions(count, points):
     for i in range(count):
         new_dist = dict()
         new_dist['mean'] = point_avg + (np.random.default_rng().random(size=dimension) * MAX_AVG_PERTURBATION)
-
-        new_dist['cv'] = (np.random.default_rng().random(size=(dimension, dimension)) * MAX_RANDOM_COV)
-
+        new_dist['cov'] = (np.random.default_rng().random(size=(dimension, dimension)) * MAX_RANDOM_COV)
+        new_dist['weight'] = 1 / count
         dists.append(new_dist)
     return dists
 
@@ -126,9 +127,27 @@ def init_random_distributions(count, points):
 # Using the cluster information, computes an m x k probability matrix
 # where m is the size of the data, k is the size of the clusters
 def expectation(distributions, points):
-    prob_mtx = np.zeros(len(points), len(distributions))
-    # TODO: fill in the formula
+    prob_mtx = np.zeros((len(points), len(distributions)))
+    for k, cluster in enumerate(distributions):
+        for m, point in enumerate(points):
+            prob_mtx[m][k] = point_cluster_probability(point, cluster, distributions)
     return prob_mtx
+
+
+def point_cluster_probability(point, cluster, distributions):
+
+    # x = np.linspace(0, 5, 10, endpoint=False)
+
+    if(len(distributions) == 0):
+        raise ValueError("There must be at least one distribution")
+
+    num = cluster['weight'] * multivariate_normal.pdf(point, mean=cluster['mean'], cov=cluster['cov'])
+    denom = 0
+
+    for dist in distributions:
+        denom += dist['weight'] * multivariate_normal.pdf(point, mean=dist['mean'], cov=dist['cov'])
+
+    return (num / denom)
 
 
 # TODO: define function signature
