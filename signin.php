@@ -78,7 +78,12 @@ _BEGIN;
                 $_SESSION['password'] = $password;
                 $_SESSION['name'] = $row['name'];
                 $_SESSION['check'] = hash('ripemd128', $_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
-			    echo "<script>alert(\"You are signed in!\");</script>";
+                if (!isset($_SESSION['initiated']))
+                {
+                    session_regenerate_id();
+                    $_SESSION['initiated'] = 1;
+                }
+                echo "<script>alert(\"You are signed in!\");</script>";
                 die();
             }
 			else
