@@ -218,16 +218,6 @@ _ERROR;
 		return $conn->real_escape_string($string);
 	}
 
-    function enterFile($conn)
-    {
-        $modelname = mysql_entities_fix_string($conn, $_POST['modelname']);
-    }
-
-    function enterText($conn)
-    {
-        $modelname = mysql_entities_fix_string($conn, $_POST['modelname']);
-    }
-
     function different_user()
     {
         destroy_session_and_data();
@@ -248,8 +238,8 @@ _ERROR;
         <div class=\"form-group\">
         <div class=\"text-center\">
         <label for=\"modeln\">Model Names: </label>
-        <select class=\"custom-select d-block w-100\" id=\"modeln\" name=\"modeln\" required>";
-        
+        <select class=\"custom-select d-block w-100\" id=\"modeln\" name=\"modeln\" required>
+        <option value=\"\">Choose...</option>";
         $querySelectMN = "SELECT * FROM userFiles WHERE username = '".$_SESSION['username']."'";
 		$result = $conn->query($querySelectMN);
 		if (!$result)
@@ -259,7 +249,7 @@ _ERROR;
 		}
 		else
 		{
-            for ($i = 0; $i < $result->num_rows; $i++)
+            for ($i = 1; $i < ($result->num_rows)+1; $i++)
             {
                 $row = $result->fetch_array(MYSQLI_ASSOC);
                 echo "<option value=\"$i\"> Model Name: ". $row['modelname'] . " | Dimensions: ". $row['dimension']. "</option>";
@@ -268,9 +258,7 @@ _ERROR;
             echo "</select></div></div>
             <div class=\"form-group\">
             <div class=\"text-center\">
-                <label for=\"filename\">Upload a file!</label>
                 <input type=\"file\" class=\"form-control-file\" id=\"filename\" name=\"filename\">
-                </div>
                 </div>
             </div>
             <div class=\"text-center\">
@@ -278,7 +266,68 @@ _ERROR;
             </div>
             </form>";
         }
+        if(((isset($_POST['modeln'])) && (!empty($_POST['modeln']))) && ((isset($_FILES['filename'])) && (!empty($_FILES['filename']['tmp_name']))))
+        {
+            $modelchoice = (int)$_POST['modeln'];
+            $querySelectMN = "SELECT * FROM userFiles WHERE username = '".$_SESSION['username']."'";
+            $result = $conn->query($querySelectMN);
+            if (!$result)
+            {
+                # query select failed
+                die("<script>alert(\"There are no models for this user. Train first!\");</script>");
+            }
+            else
+            {
+                for ($i = 1; $i <= $modelchoice; $i++)
+                {
+                    $row = $result->fetch_array(MYSQLI_ASSOC);
+                }
+                $result->close();
+                $dim = $row['dimension'];
+                $mn = $row['modelname'];
+                enterFile($conn, $dim, $mn);
+            }
+        }
+    }
+    
+    function enterFile($conn, $dim, $mn)
+    {
+        $fileText = file_get_contents($_FILES['filename']['tmp_name'], FALSE, NULL, 0);
+        $text = mysql_entities_fix_string($conn, $fileText);
         
+        $arr = explode('\n', $text);
+        
+        $check = checkFile($arr, $dim);
+        
+        if($check == TRUE)
+        {
+            $str = implode("", $arr);
+            
+        }
+        else
+        {
+            #incorrect file format
+            echo "<h3>The file uploaded does not match the specified dimension type. Please sign in again and input the correct file.<h3>"; 
+        }
+    }
+
+    function checkFile($fileText, $dimension)
+    {
+        foreach($fileText as $data) {
+            // Splits file into array separated by spaces >> Should contain each value in point
+            $result = explode(" ", $data);
+            if(count($result) == $dimension){
+                foreach($result as $num){
+                    if(!is_numeric($num)){
+                        return FALSE;
+                    }
+                }
+            }else{
+                $length = count($result);
+                return FALSE;
+            }
+        }
+        return TRUE;
     }
 
     $conn->close();
