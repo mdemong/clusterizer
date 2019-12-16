@@ -20,7 +20,7 @@
             $username = $_SESSION['username'];
             $password = $_SESSION['password'];
             $name = $_SESSION['name'];
-
+            
             echo <<<_BEGIN
             <!DOCTYPE html>
             <html lang="en">
@@ -84,16 +84,7 @@
                     <h1>Testing</h1>
                     <p class="lead">This will compare the results from the trained model with the distance between each point and the final centroids. While training attaches data points to certain clusters, the testing will show the actual distance between each data point and the final centroid. </p>
                 </div>
-        
-                <form action="testing.php" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="filename">Upload a file!</label>
-                        <input type="file" class="form-control-file" id="filename" name="filename">
-                    </div>
-        
-                    <input type="submit" value="SUBMIT">
-                </form>
-        
+               
             </div>
             <!-- /.container -->
         
@@ -113,6 +104,7 @@
             <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
             <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">        
 _BEGIN;
+            testForm($conn);
         }
     }
     else 
@@ -249,6 +241,46 @@ _ERROR;
         setcookie(session_name(), '', time() - 2592000, '/');
         session_destroy();
     }
+
+    function testForm($conn)
+    {
+        echo "<form action=\"testing.php\" method=\"post\" enctype=\"multipart/form-data\">
+        <div class=\"form-group\">
+        <div class=\"text-center\">
+        <label for=\"modeln\">Model Names: </label>
+        <select class=\"custom-select d-block w-100\" id=\"modeln\" name=\"modeln\" required>";
+        
+        $querySelectMN = "SELECT * FROM userFiles WHERE username = '".$_SESSION['username']."'";
+		$result = $conn->query($querySelectMN);
+		if (!$result)
+		{
+            # query select failed
+            die("<script>alert(\"There are no models for this user. Train first!\");</script>");
+		}
+		else
+		{
+            for ($i = 0; $i < $result->num_rows; $i++)
+            {
+                $row = $result->fetch_array(MYSQLI_ASSOC);
+                echo "<option value=\"$i\"> Model Name: ". $row['modelname'] . " | Dimensions: ". $row['dimension']. "</option>";
+            }
+            $result->close();
+            echo "</select></div></div>
+            <div class=\"form-group\">
+            <div class=\"text-center\">
+                <label for=\"filename\">Upload a file!</label>
+                <input type=\"file\" class=\"form-control-file\" id=\"filename\" name=\"filename\">
+                </div>
+                </div>
+            </div>
+            <div class=\"text-center\">
+            <input type=\"submit\" value=\"SUBMIT\">
+            </div>
+            </form>";
+        }
+        
+    }
+
     $conn->close();
     echo "</body></html>";
 ?>

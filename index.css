@@ -1,6 +1,7 @@
 body {
     padding-top: 50px;
     padding-bottom: 20px;
+    text-align: center;
 }
 
 .starter-template {
@@ -40,4 +41,8 @@ body {
 
 .dropdown-menu>li>a {
     font-size: 1.4em;
+}
+
+.form-group {
+    display: inline-block;
 }
