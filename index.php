@@ -65,7 +65,7 @@
         <div>
              <div class = "text-center"><h1>K-Means Clustering Algorithm</h1></div>
     <div class = "text-center"><img class="rounded" src="https://upload.wikimedia.org/wikipedia/commons/e/ea/K-means_convergence.gif" alt="" width=30% height=30%;></div>
-    <h3>An iterative algorithm that tries to partition the dataset into K pre-defined distinct non-overlapping subgroups (clusters) where each data point belongs to only one group. This algorithm is implemented using the following steps:<\h3>
+    <h3>An iterative algorithm that tries to partition the dataset into K pre-defined distinct non-overlapping subgroups (clusters) where each data point belongs to only one group. This algorithm is implemented using the following steps:</h3>
               <h4><ol>
                 <li>Specify number of clusters K.</li>
                 <li>Initialize centroids by first shuffling the dataset and then randomly selecting K data points for the centroids without replacement.</li>
@@ -82,7 +82,7 @@
     
      <div class = "text-center"><h1>Expectation Maximization Algorithm</h1></div>
     <div class = "text-center"><img class="rounded" src="https://upload.wikimedia.org/wikipedia/commons/6/69/EM_Clustering_of_Old_Faithful_data.gif" alt=""></div>
-    <h3>An algorithm that uses the available observed data of the dataset to estimate the missing data and then using that data to update the values of the parameters. This is implemented in the following steps:<\h3>
+    <h3>An algorithm that uses the available observed data of the dataset to estimate the missing data and then using that data to update the values of the parameters. This is implemented in the following steps:</h3>
     <ol>
     <h4>  <li>Initially, a set of initial values of the parameters are considered. A set of incomplete observed data is given to the system with the assumption that the observed data comes from a specific model.</li>
     <li>The next step is known as “Expectation” – step or E-step. In this step, we use the observed data in order to estimate or guess the values of the missing or incomplete data. It is basically used to update the variables.</li>
