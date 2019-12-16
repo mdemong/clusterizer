@@ -169,12 +169,15 @@ _BEGIN;
             {
                 $number = $_POST['clusters'];
                 $num = mysql_entities_fix_string($conn, $number);
-                if(is_numeric($num) && ((int)$num) > 0){
+                if(is_numeric($num) && ((int)$num) > 0)
+                {
                     $type = $_FILES['file1']['type'];
                     if ($type === "text/plain")
                     {
                         enterFile($conn);
-                    }else {
+                    }
+                    else 
+                    {
                         #incorrect file format
                         echo "<h3>Incorrect file format! Please try again with a .txt file.<h3>";
                     }
@@ -189,9 +192,11 @@ _BEGIN;
             {
                 $number = $_POST['clusters'];
                 $num = mysql_entities_fix_string($conn, $number);
-                if(is_numeric($num) && ((int)$num) > 0){
+                if(is_numeric($num) && ((int)$num) > 0)
+                {
                     enterText($conn);
-                }else {
+                }else 
+                {
                     #incorrect file format
                     echo "<h3>Incorrect cluster amount! It must be an integer above 0.<h3>";
                 }
@@ -270,10 +275,8 @@ _BEGIN;
             inputDB($conn, $text);
         }else{
             #incorrect file format
-            echo "<h3>The file uploaded does not match the specified dimension type. Please sign in again and input the correct file.<h3>";
-            
+            echo "<h3>The file uploaded does not match the specified dimension type. Please sign in again and input the correct file.<h3>";   
         }
-        
     }
 
     function enterText($conn)
@@ -307,12 +310,10 @@ _BEGIN;
             
         }else{
             #incorrect file format
-            echo "<h3>The text entered does not match the specified dimension type. Please sign in again and input the correct file.<h3>";
-            
+            echo "<h3>The text entered does not match the specified dimension type. Please sign in again and input the correct file.<h3>";  
         }
         $preplace->close();
     }
-    
     
     function computeAlg($fileText)
     {
@@ -320,8 +321,6 @@ _BEGIN;
         $clusterAmount= $_POST['clusters'];
         $dimension = $_POST['dim'];
         $combine = $fileText."Z".$dimension."Z".$clusterAmount;
-
-        echo "$algorithm <br> $clusterAmount <br> $dimension <br> $combine";
 
         if($algorithm == 0){
             $PATH_TO_SCRIPT = "scripts/k-means.py";
@@ -335,10 +334,8 @@ _BEGIN;
             if($retcode !== 0) echo "Error $retcode<br>";
             echo implode("<br>",$output);
             //echo $pyout;
-        }
-        
+        }    
     }
-    
     
     function checkFile($fileText)
     {
