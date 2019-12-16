@@ -111,9 +111,7 @@ _BEGIN;
     $queryCreateEMTable = "CREATE TABLE IF NOT EXISTS em (
       username  VARCHAR(32) NOT NULL,
       modelname VARCHAR(32) NOT NULL,
-      weights LONGTEXT,
-      means LONGTEXT,
-      covariances LONGTEXT,
+      distributions LONGTEXT,
       PRIMARY KEY(username, modelname));";
     
     $createTable = $conn->query($queryCreateEMTable);

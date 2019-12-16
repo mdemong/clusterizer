@@ -421,7 +421,17 @@ _ERROR;
             echo implode("<br>",$output);
         }
         else if ($algorithm == 1) {
-            // TODO: EM
+            $PATH_TO_SCRIPT = "scripts/em.py";
+            $command = escapeshellcmd('python ' . $PATH_TO_SCRIPT . " \"" . $combine . "\"");
+            $output = [];
+            $retcode = -1;
+            
+            exec($command, $output, $retcode);
+            if($retcode !== 0) echo "Sorry, something went wrong. Please try again.<br>";
+            add_to_em($conn, json_decode($output[1], true));
+            
+            print($output[0]);
+            print(json_encode(json_decode($output[1]), JSON_PRETTY_PRINT));
         }    
     }
     
@@ -441,17 +451,37 @@ _ERROR;
             }
         }
 
-        
-
         if (!empty($centroids)) {
             $preplace = $conn->prepare('INSERT INTO kmeans VALUES(?,?,?)');
             $preplace->bind_param('sss', $username, $modelname, $str_centroids);
             $username = $_SESSION['username'];
             $modelname = mysql_entities_fix_string($conn, $_POST['modelname']);
             $str_centroids = json_encode($centroids);
-            $preplace->execute();
+            $addEM = $preplace->execute();
+            $preplace->close();
+            if (!$addKM) die("<script>alert(\"Something went wrong! Please try signing up again.\");</script>");
         }
 
+    }
+
+    function print_em($json_output) {
+        $dists = $json_output['dists'];
+        $table = $json_output['table'];
+    }
+
+    function add_to_em($conn, $json_output) {
+
+        $preplace = $conn->prepare('INSERT INTO em VALUES(?,?,?)');
+        $preplace->bind_param('sss', $username, $modelname, $strdists);
+        $username = $_SESSION['username'];
+        $modelname = mysql_entities_fix_string($conn, $_POST['modelname']);
+
+        $dists = $json_output['dists'];
+        $strdists = json_encode($dists);
+        
+        $addEM = $preplace->execute();
+        $preplace->close();
+        if (!$addEM) die("<script>alert(\"Something went wrong! Please try signing up again.\");</script>");
     }
 
     function checkFile($fileText)
