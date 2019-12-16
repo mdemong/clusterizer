@@ -386,9 +386,10 @@ _ERROR;
     {
         $modelname = mysql_entities_fix_string($conn, $_POST['modelname']);
         $dimension = (int)$_POST['dim'];
+        $algtype = (int)$_POST['alg'];
         $username = $_SESSION['username'];
-        $preplace = $conn->prepare('INSERT INTO userFiles VALUES(?,?,?)');
-        $preplace->bind_param('ssi', $username, $modelname, $dimension);
+        $preplace = $conn->prepare('INSERT INTO userFiles VALUES(?,?,?,?)');
+        $preplace->bind_param('ssii', $username, $modelname, $algtype, $dimension);
         
         $result = $preplace->execute();
         if($result){

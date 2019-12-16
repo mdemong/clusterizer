@@ -285,12 +285,13 @@ _ERROR;
                 $result->close();
                 $dim = $row['dimension'];
                 $mn = $row['modelname'];
-                enterFile($conn, $dim, $mn);
+                $algtype = $row['algtype'];
+                enterFile($conn, $dim, $mn, $algtype);
             }
         }
     }
     
-    function enterFile($conn, $dim, $mn)
+    function enterFile($conn, $dim, $mn, $algtype)
     {
         $fileText = file_get_contents($_FILES['filename']['tmp_name'], FALSE, NULL, 0);
         $text = mysql_entities_fix_string($conn, $fileText);
@@ -302,7 +303,8 @@ _ERROR;
         if($check == TRUE)
         {
             $str = implode("", $arr);
-            
+            #algtype = 0 = kmeans
+
         }
         else
         {
