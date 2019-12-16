@@ -2,6 +2,9 @@ from scipy.stats import multivariate_normal
 import numpy as np
 from pprint import pprint as pprint
 import io
+import sys
+import json
+import re
 
 ## Expectation Maximization with Gaussian Mixture Models
 ## Micah Demong
@@ -72,7 +75,7 @@ def expectation_maximization(k, points, distributions=[]):
     while(significant_mean_change(old_means, new_means)):
         old_means = new_means
         iteration += 1
-        print("Starting iteration ", iteration)
+        # print("Starting iteration ", iteration)
 
         # E step: Compute probabilities needed in M step, based on
           # current estimates of the distribution parameters
@@ -85,9 +88,9 @@ def expectation_maximization(k, points, distributions=[]):
         new_means = get_means(distributions)
 
     
-    print("Ended on iteration ", iteration)
+    print("Took ", iteration, " iterations.")
     table = np.concatenate((points, prob_mtx), axis=1)
-    return distributions, table
+    return {'dists':distributions, 'table':table}
 
 
 # Using mean with difference 1e-6 as suggested in:
@@ -226,5 +229,27 @@ def maximize_cov(resp, prob_mtx, i, points):
     return (np.cov(points, rowvar=False, aweights=weights) + EPS)
     # return np.average(np.outer(diff, diff), axis=0, weights=prob_mtx[:,i]) / resp
 
+# From https://stackoverflow.com/a/47626762
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
 
-# TODO: Create function to convert numpy arrays to json-serializable python lists
+
+text = sys.argv[1].split('Z')
+if(len(text) == 3):
+    dim = int(text[1])
+    num = int(text[2])
+    replaced = re.sub(r'\\n', '\n', text[0])
+    pts = input_to_array(replaced)
+    # pprint(re.sub(r'\\n', '\n', text[0]))
+    # pprint(pts)
+    result = expectation_maximization(num, pts)
+    print(json.dumps(result, cls=NumpyEncoder))
+else:
+   print("The input values are too short: ", sys.argv[1])
+
+sys.stdout.flush
+sys.stdin.close
+sys.stdout.close
