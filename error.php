@@ -59,10 +59,11 @@
 		<div class="container">
 			<div class="starter-template">
 				<img class="d-block mx-auto mb-4" src="https://image.flaticon.com/icons/png/512/139/139690.png" alt="" width="100" height="100">
+				<h1>ERROR</h1>
 				<h1>Sorry, but something went wrong. Please go back to the home page.</h1>
 			</div>
-			<div>
-				<img src = "https://images-production.freetls.fastly.net/uploads/posts/image/160749/sad-cat-luhu.jpg?auto=compress&crop=faces%2Ctop&fit=crop&h=562&q=55&w=750">
+			<div class="text-center">
+				<img class="rounded" src = "https://images-production.freetls.fastly.net/uploads/posts/image/160749/sad-cat-luhu.jpg?auto=compress&crop=faces%2Ctop&fit=crop&h=562&q=55&w=750">
 			</div>
 		</div>
 		<!-- /.container -->
