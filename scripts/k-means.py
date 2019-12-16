@@ -27,7 +27,7 @@ def km_init(fileText, dim, num):
     
     dimension = dim
     clusterAmount = num
-    
+print (".     text is is",fileText)
     max = float(fileText[0])
     min = float(fileText[0])
     # File Text is split into data points separated by array
@@ -240,7 +240,10 @@ text = sys.argv[1].split('Z')
 if(len(text) == 3):
     dim = int(text[1])
     num = int(text[2])
+    print ("dimension is",dim)
+    print ("nu is", num)
     km_init(text[0], dim, num);
+    print "if"
 else:
    print "The input values are too short."
 

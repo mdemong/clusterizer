@@ -289,9 +289,7 @@ _BEGIN;
         }else{
             #incorrect file format
             echo "<h3>The text entered does not match the specified dimension type. Please sign in again and input the correct file.<h3>";
-            
         }
-        
     }
     
     # If the enterFile and enterText methods return a valid string, then the values can be sumitted to the DB if there are no errors
@@ -323,6 +321,8 @@ _BEGIN;
         $dimension = $_POST['dim'];
         $combine = $fileText."Z".$dimension."Z".$clusterAmount;
 
+        echo "$algorithm <br> $clusterAmount <br> $dimension <br> $combine";
+
         if($algorithm == 0){
             $PATH_TO_SCRIPT = "scripts/k-means.py";
             // There also exists an escapeshellcmd() function.
@@ -330,8 +330,7 @@ _BEGIN;
 . $PATH_TO_SCRIPT . " \"" . $combine . "\"");
             $output = [];
             $retcode = -1;
-            //echo "$combine<br>";
-            //echo "$command<br>";
+            
             exec($command, $output, $retcode);
             if($retcode !== 0) echo "Error $retcode<br>";
             echo implode("<br>",$output);
