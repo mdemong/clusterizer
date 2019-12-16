@@ -237,19 +237,38 @@ class NumpyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-text = sys.argv[1].split('Z')
-if(len(text) == 3):
-    dim = int(text[1])
-    num = int(text[2])
-    replaced = re.sub(r'\\n', '\n', text[0])
-    pts = input_to_array(replaced)
-    # pprint(re.sub(r'\\n', '\n', text[0]))
-    # pprint(pts)
-    result = expectation_maximization(num, pts)
+# From: https://stackoverflow.com/a/20725965
+def is_json(myjson):
+  try:
+    json_object = json.loads(myjson)
+  except ValueError as e:
+    return False
+  return True
+
+
+if(is_json(sys.argv[1])): 
+    json_obj = json.loads(sys.argv[1])
+    dists = json_obj['dists']
+    points = json_obj['points']
+    k = json_obj['k']
+    result = expectation_maximization(num, pts, dists)
     print(json.dumps(result, cls=NumpyEncoder))
-else:
-   print("The input values are too short: ", sys.argv[1])
+else: 
+    text = sys.argv[1].split('Z')
+    if(len(text) == 3):
+        dim = int(text[1])
+        num = int(text[2])
+        replaced = re.sub(r'\\n', '\n', text[0])
+        pts = input_to_array(replaced)
+        # pprint(re.sub(r'\\n', '\n', text[0]))
+        # pprint(pts)
+        result = expectation_maximization(num, pts)
+        print(json.dumps(result, cls=NumpyEncoder))
+    else:
+    print("The input values are too short: ", sys.argv[1])
 
 sys.stdout.flush
 sys.stdin.close
 sys.stdout.close
+
+
