@@ -304,6 +304,10 @@ _ERROR;
         {
             $str = implode("", $arr);
             #algtype = 0 = kmeans
+            
+            if($algtype == 1) {
+                testEM($conn, $dim, $mn, $algtype);
+            }
 
         }
         else
@@ -311,6 +315,25 @@ _ERROR;
             #incorrect file format
             echo "<h3>The file uploaded does not match the specified dimension type. Please sign in again and input the correct file.<h3>"; 
         }
+    }
+
+    function testEM($conn, $dim, $mn, $algtype) {
+        $query = "SELECT * FROM (em NATURAL JOIN userFiles)
+                    WHERE username=(?) AND modelname=(?);";
+        $preplace = $conn->prepare($query);
+        $preplace->bind_param('sss', $username, $mn);
+        $username = $_SESSION['username'];
+        $succeed = $preplace->execute();
+        if (!$succeed) die("<script>alert(\"Something went wrong! Please try signing up again.\");</script>");
+        
+        $result = $preplace->get_result();
+        echo $result['username']. '<br>';
+        echo $result['modelname']. '<br>';
+        echo $result['dimension']. '<br>';
+        echo $result['distributions']. '<br>';
+
+        $result->close();
+        $preplace->close();
     }
 
     function checkFile($fileText, $dimension)
