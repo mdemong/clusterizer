@@ -343,7 +343,6 @@ _ERROR;
 
     function destroy_session_and_data()
     {
-        session_start();
         $_SESSION = array();
         setcookie(session_name(), '', time() - 2592000, '/');
         session_destroy();
@@ -393,7 +392,7 @@ _ERROR;
         
         $result = $preplace->execute();
         if($result){
-            computeAlg($fileText);
+            computeAlg($conn, $fileText);
             
         }else{
             #incorrect file format
@@ -402,7 +401,7 @@ _ERROR;
         $preplace->close();
     }
     
-    function computeAlg($fileText)
+    function computeAlg($conn, $fileText)
     {
         $algorithm = (int)$_POST['alg'];
         $clusterAmount= $_POST['clusters'];
@@ -412,18 +411,48 @@ _ERROR;
         if($algorithm == 0){
             $PATH_TO_SCRIPT = "scripts/k-means.py";
             // There also exists an escapeshellcmd() function.
-            $command = escapeshellcmd('python ' // . dirname(__DIR__) . '/'
-. $PATH_TO_SCRIPT . " \"" . $combine . "\"");
+            $command = escapeshellcmd('python ' . $PATH_TO_SCRIPT . " \"" . $combine . "\"");
             $output = [];
             $retcode = -1;
             
             exec($command, $output, $retcode);
             if($retcode !== 0) echo "Error $retcode<br>";
+            add_to_kmeans($conn, $output);
             echo implode("<br>",$output);
-            //echo $pyout;
+        }
+        else if ($algorithm == 1) {
+            // TODO: EM
         }    
     }
     
+    function add_to_kmeans($conn, $output) {
+
+        $centroids = ['asdf'];
+
+        for ($i = count($output) - 1; $i >= 0; $i-- ) {
+            $val = [];
+            $str = $output[$i];
+            if(preg_match('/(?<=: ).*/', $str, $val)) {
+                array_push($centroids , $val[0]);
+            }
+            else if(preg_match('^/\w/+$', $str)) continue;
+            else {
+                break;
+            }
+        }
+
+        echo json_encode($centroids);
+
+        if (!empty($centroids)) {
+            $preplace = $conn->prepare('INSERT INTO kmeans VALUES(?,?,?)');
+            $preplace->bind_param('sss', $_SESSION['username'], 
+                mysql_entities_fix_string($conn, $_POST['modelname']), 
+                $centroids);
+            $preplace->exec();
+        }
+
+    }
+
     function checkFile($fileText)
     {
         $dimension = (int)$_POST['dim'];
