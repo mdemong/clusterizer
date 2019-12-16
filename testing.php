@@ -321,16 +321,18 @@ _ERROR;
         $query = "SELECT * FROM (em NATURAL JOIN userFiles)
                     WHERE username=(?) AND modelname=(?);";
         $preplace = $conn->prepare($query);
-        $preplace->bind_param('sss', $username, $mn);
+        $preplace->bind_param('ss', $username, $mn);
         $username = $_SESSION['username'];
         $succeed = $preplace->execute();
-        if (!$succeed) die("<script>alert(\"Something went wrong! Please try signing up again.\");</script>");
+        if (!$succeed) die("<script>alert(\"Something went wrong! Please try again.\");</script>");
         
         $result = $preplace->get_result();
-        echo $result['username']. '<br>';
-        echo $result['modelname']. '<br>';
-        echo $result['dimension']. '<br>';
-        echo $result['distributions']. '<br>';
+        if(!$result) die("<script>alert(\"Something went wrong! Please try again.\");</script>");
+
+        $arr = $result->fetch_assoc();
+        
+        echo $arr['dimension']. '<br>';
+        echo $arr['distributions']. '<br>';
 
         $result->close();
         $preplace->close();
