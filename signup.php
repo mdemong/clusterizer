@@ -82,13 +82,41 @@ _BEGIN;
 		die(errorPage());
   }
     
-    $queryCreateUserTable = "CREATE TABLE IF NOT EXISTS userFiles(
+    $queryCreateUserFilesTable = "CREATE TABLE IF NOT EXISTS userFiles(
     username VARCHAR(32) NOT NULL,
     modelname VARCHAR(32) NOT NULL,
     PRIMARY KEY(username, modelname),
     dimension INTEGER NOT NULL);";
     
-    $createTable = $conn->query($queryCreateUserTable);
+    $createTable = $conn->query($queryCreateUserFilesTable);
+    if (!$createTable)
+    {
+        # table could not be created
+        die(errorPage());
+    }
+    
+    $queryCreatekmeansTable = "CREATE TABLE IF NOT EXISTS kmeans (
+      username  VARCHAR(32) NOT NULL,
+      modelname VARCHAR(32) NOT NULL,
+      centroids LONGTEXT,
+      PRIMARY KEY(username, modelname));";
+    
+    $createTable = $conn->query($queryCreatekmeansTable);
+    if (!$createTable)
+    {
+        # table could not be created
+        die(errorPage());
+    }
+
+    $queryCreateEMTable = "CREATE TABLE IF NOT EXISTS em (
+      username  VARCHAR(32) NOT NULL,
+      modelname VARCHAR(32) NOT NULL,
+      weights LONGTEXT,
+      means LONGTEXT,
+      covariances LONGTEXT,
+      PRIMARY KEY(username, modelname));";
+    
+    $createTable = $conn->query($queryCreateEMTable);
     if (!$createTable)
     {
         # table could not be created
