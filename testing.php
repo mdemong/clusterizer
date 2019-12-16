@@ -82,7 +82,7 @@
                 <div class="starter-template">
                     <img class="d-block mx-auto mb-4" src="https://image.flaticon.com/icons/png/512/139/139690.png" alt="" width="100" height="100">
                     <h1>Testing</h1>
-                    <p class="lead">TEST THE MODEL</p>
+                    <p class="lead">This will compare the results from the trained model with the distance between each point and the final centroids. While training attaches data points to certain clusters, the testing will show the actual distance between each data point and the final centroid. </p>
                 </div>
         
                 <form action="testing.php" method="post" enctype="multipart/form-data">
