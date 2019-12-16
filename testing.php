@@ -308,7 +308,10 @@ _ERROR;
             if($algtype == 1) {
                 testEM($conn, $dim, $mn, $algtype, $text);
             }
-
+            else if ($algtype == 0)
+            {
+                computeAlgKmeans($conn, $str, $mn);
+            }
         }
         else
         {
@@ -368,6 +371,31 @@ _ERROR;
             }
         }
         return TRUE;
+    }
+
+    function computeAlgKmeans($conn, $fileText, $modelname)
+    {
+        $query = "SELECT * FROM (kmeans NATURAL JOIN userFiles) WHERE username=(?) AND modelname=(?);";
+        $preplace = $conn->prepare($query);
+        $preplace->bind_param('ss', $username, $modelname);
+        $username = $_SESSION['username'];
+        $succeed = $preplace->execute();
+
+        $result = $preplace->get_result();
+        $row = $result->fetch_array(MYSQLI_ASSOC);
+        $c = $row['centroids'];
+        
+        $combine = $fileText."Z".$c;
+
+        $PATH_TO_SCRIPT = "scripts/k-means-testing.py";
+        // There also exists an escapeshellcmd() function.
+        $command = escapeshellcmd('python ' . $PATH_TO_SCRIPT . " \"" . $combine . "\"");
+        $output = [];
+        $retcode = -1;
+            
+        exec($command, $output, $retcode);
+        if($retcode !== 0) echo "Error $retcode<br>";
+        echo implode("<br>",$output);
     }
 
     $conn->close();
