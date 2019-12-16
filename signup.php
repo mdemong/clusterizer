@@ -79,7 +79,6 @@ _BEGIN;
 	if (!$createTable)
 	{
     # table could not be created
-    #$createTable->close();
 		die(errorPage());
   }
     
@@ -95,7 +94,7 @@ _BEGIN;
         # table could not be created
         die(errorPage());
     }
-  #$createTable->close();
+    #$createTable->close();
 
   if(((isset($_POST['inputName'])) && (!empty($_POST['inputName']))) && ((isset($_POST['inputUsername'])) && (!empty($_POST['inputUsername']))) && ((isset($_POST['inputEmail'])) && (!empty($_POST['inputEmail']))) && ((isset($_POST['inputPassword'])) && (!empty($_POST['inputPassword']))))
   {
@@ -144,7 +143,7 @@ _BEGIN;
 
     if($userNameValid === false)
     {
-      echo "<script>alert(\"Your username is in the wrong format. Please try signing up again.\");</script>";
+      die("<script>alert(\"Your username is in the wrong format. Please try signing up again.\");</script>");
     }
     else 
     {
@@ -155,23 +154,22 @@ _BEGIN;
         $salt1 = substr($shuf1, STRING_BEG, SALT1_LEN);
         $shuf2 = str_shuffle(STRING_MASH);
         $salt2 = substr($shuf2, STRING_BEG, SALT2_LEN);
-        $token = hash('ripemd128', '$salt1$password$salt2');
+        $token = hash('ripemd128', "$salt1$password$salt2");
 
         $addUser = $preplace->execute();
 		    if (!$addUser)
 		    {
           # user could not be inserted
-          #$addUser->close();
-          echo "<script>alert(\"Something went wrong! Please try signing up again.\");</script>";
+          die("<script>alert(\"Something went wrong! Please try signing up again.\");</script>");
         }
         else {
-			    echo "<script>alert(\"You are signed up! Go back to the main page.\");</script>";
+			    die("<script>alert(\"You are signed up! Go back to the main page.\");</script>");
         }
-      #$addUser->close();
+        $addUser->close();
       }
       else 
       {
-        echo "<script>alert(\"Your email is in the wrong format. Please try signing up again.\");</script>";
+        die("<script>alert(\"Your email is in the wrong format. Please try signing up again.\");</script>");
       }
     }
   }

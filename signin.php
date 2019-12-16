@@ -26,18 +26,18 @@
           <h1 class="h3 mb-3 font-weight-normal">Sign in</h1><br>
     
           <div class="form-group">
-            <label for="inputUsername" class="sr-only">Username</label>
-            <input type="text" name="inputUsername" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+            <label for="signinUsername" class="sr-only">Username</label>
+            <input type="text" name="signinUsername" id="signinUsername" class="form-control" placeholder="Username" required autofocus>
           </div>
 
           <div class="form-group">
-            <label for="inputPassword" class="sr-only">Password</label>
-            <input type="password" name="inputPassword" id="inputPassword" class="form-control" placeholder="Password" required>
+            <label for="signinPassword" class="sr-only">Password</label>
+            <input type="password" name="signinPassword" id="signinPassword" class="form-control" placeholder="Password" required>
           </div>
     
           <div class="form-group">
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-            <br><p class="mt-5 mb-3 text-muted">	<a href = "index.php"> back to main page </a></p>
+            <br><p class="mt-5 mb-3 text-muted"> <a href = "index.php"> back to main page </a></p>
           </div>
       </form></body>
 _BEGIN;
@@ -51,26 +51,25 @@ _BEGIN;
         die(errorPage());
     }
 
-    if(((isset($_POST['inputUsername'])) && (!empty($_POST['inputUsername']))) && ((isset($_POST['inputPassword'])) && (!empty($_POST['inputPassword']))))
+    if(((isset($_POST['signinUsername'])) && (!empty($_POST['signinUsername']))) && ((isset($_POST['signinPassword'])) && (!empty($_POST['signinPassword']))))
 	{
-		$username = mysql_entities_fix_string($conn, $_POST['inputUsername']);
-		$password = mysql_entities_fix_string($conn, $_POST['inputPassword']);
+		$username = mysql_entities_fix_string($conn, $_POST['signinUsername']);
+		$password = mysql_entities_fix_string($conn, $_POST['signinPassword']);
 
 		$querySelect = "SELECT * FROM user WHERE username = '$username'";
 		$result = $conn->query($querySelect);
 		if (!$result)
 		{
             # query select failed
-            $result->close();
-            die("Invalid username or password. Please <a href='signin.php'>click here</a> to try logging in again.");
+            die("<script>alert(\"Invalid username or password. Please try logging in again.\");</script>");
 		}
 		else if($result->num_rows)
 		{
             $row = $result->fetch_array(MYSQLI_ASSOC);
             $result->close();
-			$salt1 = $row['salt1'];
+            $salt1 = $row['salt1'];
 			$salt2 = $row['salt2'];
-			$token = hash('ripemd128', '$salt1$password$salt2');
+			$token = hash('ripemd128', "$salt1$password$salt2");
 			if ($token == $row['hashpass'])
 			{
                 session_start();
@@ -83,18 +82,17 @@ _BEGIN;
                     session_regenerate_id();
                     $_SESSION['initiated'] = 1;
                 }
-                echo "<script>alert(\"You are signed in!\");</script>";
-                die();
+                die("<script>alert(\"You are signed in!\");</script>");
             }
 			else
 			{
-                die("Invalid username or password. Please <a href='signin.php'>click here</a> to try logging in again.");
+                die("<script>alert(\"Invalid username or password. Please try logging in again.\");</script>");
 			}
 		}
 		else
 		{
-            die("Invalid username or password. Please <a href='signin.php'>click here</a> to try logging in again.");
-		}
+            die("<script>alert(\"Invalid username or password. Please try logging in again.\");</script>");
+        }
 	}
     
     function errorPage()
