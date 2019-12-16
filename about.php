@@ -61,15 +61,19 @@
             <img class="d-block mx-auto mb-4" src="https://image.flaticon.com/icons/png/512/139/139690.png" alt="" width="100" height="100">
             <h1>CLUSTERIZER</h1>
             <h3> <br> Micah Demong | Gurdev Sihra | Katrina Tran</h3>
+            <h1> <br>ABOUT US</h1>
         </div>
         <div>
-            <h1>about us</h1>
                 <h2 class="text-center">Micah Demong</h2>
-                    <h3>...information about Micah here...<h3>
+    <div class = "text-center"><img style="border-radius: 50%;"class="rounded"  vspace="20"src="images/micah.jpg" alt="avatar" width=30% height=30%;></div>
+                    <h3>I like pizza and dogs 🍕🐶<h3>
+     <div class = "text-center"><img style="border-radius: 50%;"class="rounded vspace="20"" src="images/gurdev.jpg" alt="avatar" width=30% height=30%;></div>
                 <h2 class="text-center">Gurdev Sihra</h2>
-                    <h3>...information about Gurdev here...<h3>
+    <h3> I am a dynamic figure ☃, often seen scaling walls and crushing ice. I have been known to remodel train stations 🚆 on my lunch breaks, making them more efficient in the area of heat retention. I translate ethnic slurs for Cuban refugees, I write award-winning operas, I manage time efficiently. Occasionally, I tread water for three days in a row. I can hurl tennis rackets at small moving objects with deadly accuracy. I once read Paradise Lost, Moby Dick, and David Copperfield in one day and still had time to refurbish an entire dining room that evening. On weekends, to let off steam, I participate in full-contact origami. I have performed several covert operations for the CIA 🕵️‍♀️. I sleep once a week; when I do sleep, I sleep in a chair. While on vacation in Canada, I successfully negotiated with a group of terrorists who had seized a small bakery. The laws of physics do not apply to me.
+<h3>
+    <div class = "text-center"><img style="border-radius: 50%;"class="rounded" vspace="20" src="images/katrina.JPG" alt="avatar" width=30% height=30%;></div>
                 <h2 class="text-center">Katrina Tran</h2>
-                    <h3>...information about Katrina here...<h3>
+                    <h3>I am an abstract artist 🎨, a concrete analyst, and a ruthless bookie. Critics worldwide swoon over my original line of corduroy evening wear. I do not perspire. I am a private citizen, yet I receive fan mail. I have been caller number nine and have won the weekend passes. Last summer I toured New Jersey with a traveling centrifugal-force demonstration. I bat .400. My deft floral 🌹 arrangements have earned me fame in international botany circles. I balance, I weave, I dodge, I frolic, and my bills are all paid. I know the exact location of every food item in the supermarket. Years ago I discovered the meaning of life but forgot to write it down. I have made extraordinary four course meals using only a mouli and a toaster oven. I breed prizewinning clams. I have won bullfights in San Juan, cliff-diving competitions in Sri Lanka, and spelling bees at the Kremlin. I have played Hamlet, I have performed open-heart surgery ❤️, and I have spoken with Elvis.<h3>
         </div>
     </div>
     <!-- /.container -->
