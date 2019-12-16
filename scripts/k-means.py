@@ -3,6 +3,7 @@ import random
 
 import fileinput
 import sys
+import re
 
 clusters = []		# total amount for each cluster
 clusterNum = []     # total number of data points in each cluster
@@ -27,7 +28,7 @@ def km_init(fileText, dim, num):
     
     dimension = dim
     clusterAmount = num
-print (".     text is is",fileText)
+    
     max = float(fileText[0])
     min = float(fileText[0])
     # File Text is split into data points separated by array
@@ -39,8 +40,8 @@ print (".     text is is",fileText)
         for x in dataPointString:
             if(x != ''):
                 val = float(x)
-                if(max < x): max = val
-                if(min > x): min = val
+                if(max < val): max = val
+                if(min > val): min = val
                 # Adding a value to the data point
                 dataPointInt.append(val)
     
@@ -125,13 +126,13 @@ def KMeans(clusterAmount):
         else:
             break
 
-    print "This is the final data_cluster: "
-    print "Format: [data point], [cluster value]"
-    print
+    print("This is the final data_cluster: ")
+    print("Format: [data point], [cluster value]")
+    print()
     for a in data_cluster:
         print(a)
-    print
-    print "These are the final centroid values: "
+    print()
+    print("These are the final centroid values: ")
     index = 0;
     for a in centroids:
         print("Cluster ", index, " :", a)
@@ -240,12 +241,9 @@ text = sys.argv[1].split('Z')
 if(len(text) == 3):
     dim = int(text[1])
     num = int(text[2])
-    print ("dimension is",dim)
-    print ("nu is", num)
     km_init(text[0], dim, num);
-    print "if"
 else:
-   print "The input values are too short."
+   print("The input values are too short: ", sys.argv[1])
 
 sys.stdout.flush
 sys.stdin.close
