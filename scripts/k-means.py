@@ -24,15 +24,15 @@ data_points = []	# List containing all the data points
 # INPUT dim (Integer)        - dimension of data points in the file
 # INPUT clusterAmount (Integer) - amount of clusters the user defined
 def km_init(fileText, dim, num):
+    
     dimension = dim
     clusterAmount = num
     
     max = float(fileText[0])
     min = float(fileText[0])
-
     # File Text is split into data points separated by array
-    splitLine = fileText.split("\n")
-    
+    splitLine = fileText.split("\\n")
+   
     for y in splitLine:
         dataPointInt = []
         dataPointString = y.split(" ")
@@ -68,6 +68,9 @@ def km_init(fileText, dim, num):
         centroids.append(c_data_point)
         clusters.append(cluster_total_data_point)
 
+        # print "This is the initial centroids: "
+#       for a in centroids:
+#   print(a)
 
     # Assign centroids to data points using a the data_cluster 2 dimensional array
     for p in data_points:
@@ -81,6 +84,7 @@ def km_init(fileText, dim, num):
 
         # Adds the data point as a key of the point and value of the  centroid's index in the array
         data_cluster.append(cluster_assign)
+
     KMeans(clusterAmount)
 
 
@@ -122,11 +126,16 @@ def KMeans(clusterAmount):
             break
 
     print "This is the final data_cluster: "
+    print "Format: [data point], [cluster value]"
+    print
     for a in data_cluster:
         print(a)
+    print
     print "These are the final centroid values: "
+    index = 0;
     for a in centroids:
-        print(a)
+        print("Cluster ", index, " :", a)
+        index = index+1
 
 # This method compares an array with the current centroids array
 # INPUT og: Array to be compared with the centroids array
@@ -227,13 +236,13 @@ def updateCentroids(num):
             index = index+1
         clusterNum[i] = 0
 
-
-km_init(fileText, dim, num):
-
-for i in sys.argv:
-    print("hello " + str(i))
-# for a in raw_input():
-#     print("woah " + a)
+text = sys.argv[1].split('Z')
+if(len(text) == 3):
+    dim = int(text[1])
+    num = int(text[2])
+    km_init(text[0], dim, num);
+else:
+   print "The input values are too short."
 
 sys.stdout.flush
 sys.stdin.close

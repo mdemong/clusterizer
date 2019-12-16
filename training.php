@@ -156,42 +156,52 @@ _BEGIN;
         {
             $number = $_POST['clusters'];
             $num = mysql_entities_fix_string($conn, $number);
-            print "number: $num ";
-            if(is_numeric($num)){
+            if(is_numeric($num) && ((int)$num) > 0){
                 $type = $_FILES['file1']['type'];
                 if ($type === "text/plain")
                 {
                     enterFile($conn);
-                    $option = $_POST['alg'];
-                    $dimesnion = int($option);
-                    $dimOpt = $_POST['dim'];
-                    
-                    
+                }else {
+                    #incorrect file format
+                    echo "<h3>Incorrect file format! Please try again with a .txt file.<h3>";
                 }
+            }else {
+                #incorrect file format
+                echo "<h3>Incorrect cluster amount! It must be an integer above 0.<h3>";
+                
             }
         }
    
         #model name with text upload only
         if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_POST['textarea'])) && (!empty($_POST['textarea']))) && (empty($_FILES['file1']['tmp_name'])))
         {
-
-            enterText($conn, );
+            $number = $_POST['clusters'];
+            $num = mysql_entities_fix_string($conn, $number);
+            if(is_numeric($num) && ((int)$num) > 0){
+                enterText($conn);
+            }else {
+                #incorrect file format
+                echo "<h3>Incorrect cluster amount! It must be an integer above 0.<h3>";
+            }
         }
     
         #model name text and file chosen --> choose file
         if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_FILES['file1'])) && (!empty($_FILES['file1']['tmp_name']))) && ((isset($_POST['textarea'])) && (!empty($_POST['textarea']))))
         {
-            $type = $_FILES['file1']['type'];
-            if ($type === "text/plain")
-            {
-                enterFile($conn);
-            }
-            else {
+            $number = $_POST['clusters'];
+            $num = mysql_entities_fix_string($conn, $number);
+            if(is_numeric($num) && ((int)$num) > 0){
+                $type = $_FILES['file1']['type'];
+                if ($type === "text/plain")
+                {
+                    enterFile($conn);
+                }else {
+                    #incorrect file format
+                    echo "<h3>Incorrect file format! Please try again with a .txt file.<h3>";
+                }
+            }else {
                 #incorrect file format
-                echo "<h3>Incorrect file format! Please try again with a .txt file.<h3>";
-                #
-                session_unset();
-                echo "<br><br><br><h1>Please <a href='signin.php'>click here</a> to log in.</h1>";
+                echo "<h3>Incorrect cluster amount! It must be an integer above 0.<h3>";
             }
         }
     }
@@ -226,15 +236,15 @@ _BEGIN;
         $text = mysql_entities_fix_string($conn, $fileText);
         
         $arr = explode('\n', $text);
-        echo "$check";
+        
         $check = checkFile($arr);
+        
         if($check == TRUE){
             inputDB($conn, $text);
         }else{
             #incorrect file format
             echo "<h3>The file uploaded does not match the specified dimension type. Please sign in again and input the correct file.<h3>";
-            session_unset();
-            echo "<br><br><br><h1>Please <a href='signin.php'>click here</a> to log in.</h1>";
+            
         }
         
     }
@@ -252,8 +262,7 @@ _BEGIN;
         }else{
             #incorrect file format
             echo "<h3>The text entered does not match the specified dimension type. Please sign in again and input the correct file.<h3>";
-            session_unset();
-            echo "<br><br><br><h1>Please <a href='signin.php'>click here</a> to log in.</h1>";
+            
         }
         
     }
@@ -264,22 +273,17 @@ _BEGIN;
         $modelname = mysql_entities_fix_string($conn, $_POST['modelname']);
         $dimension = (int)$_POST['dim'];
         $username = $_SESSION['username'];
-        
-        echo "$modelname   $dimension   $algorithm  $username";
-
         $preplace = $conn->prepare('INSERT INTO userFiles VALUES(?,?,?)');
         $preplace->bind_param('ssi', $username, $modelname, $dimension);
         
         $result = $preplace->execute();
         if($result){
-            echo " added into database";
-           // computeAlg($fileText, );
+            computeAlg($fileText);
             
         }else{
             #incorrect file format
             echo "<h3>The text entered does not match the specified dimension type. Please sign in again and input the correct file.<h3>";
-            session_unset();
-            echo "<br><br><br><h1>Please <a href='signin.php'>click here</a> to log in.</h1>";
+            
         }
         $preplace->close();
     }
@@ -288,23 +292,25 @@ _BEGIN;
     function computeAlg($fileText)
     {
         $algorithm = (int)$_POST['alg'];
-        $number = $_POST['clusters'];
+        $clusterAmount= $_POST['clusters'];
         $dimension = $_POST['dim'];
-        $combine = $fileText." ZZZ ".$dimension." ZZZ ".$number;
+        $combine = $fileText."Z".$dimension."Z".$clusterAmount;
+
         if($algorithm == 0){
             $PATH_TO_SCRIPT = "scripts/k-means.py";
             // There also exists an escapeshellcmd() function.
             $command = escapeshellcmd('python ' // . dirname(__DIR__) . '/'
-                                      . $PATH_TO_SCRIPT . " \"" . $combine . "\"");
+. $PATH_TO_SCRIPT . " \"" . $combine . "\"");
             $output = [];
             $retcode = -1;
-            echo "$combine<br>";
-            echo "$command<br>";
+            //echo "$combine<br>";
+            //echo "$command<br>";
             exec($command, $output, $retcode);
             if($retcode !== 0) echo "Error $retcode<br>";
             echo implode("<br>",$output);
             //echo $pyout;
         }
+        
     }
     
     
