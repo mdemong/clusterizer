@@ -427,7 +427,7 @@ _ERROR;
     
     function add_to_kmeans($conn, $output) {
 
-        $centroids = ['asdf'];
+        $centroids = [];
 
         for ($i = count($output) - 1; $i >= 0; $i-- ) {
             $val = [];
@@ -435,20 +435,21 @@ _ERROR;
             if(preg_match('/(?<=: ).*/', $str, $val)) {
                 array_push($centroids , $val[0]);
             }
-            else if(preg_match('^/\w/+$', $str)) continue;
+            else if(preg_match('/\w+$/', $str)) continue;
             else {
                 break;
             }
         }
 
-        echo json_encode($centroids);
+        
 
         if (!empty($centroids)) {
             $preplace = $conn->prepare('INSERT INTO kmeans VALUES(?,?,?)');
-            $preplace->bind_param('sss', $_SESSION['username'], 
-                mysql_entities_fix_string($conn, $_POST['modelname']), 
-                $centroids);
-            $preplace->exec();
+            $preplace->bind_param('sss', $username, $modelname, $str_centroids);
+            $username = $_SESSION['username'];
+            $modelname = mysql_entities_fix_string($conn, $_POST['modelname']);
+            $str_centroids = json_encode($centroids);
+            $preplace->execute();
         }
 
     }
