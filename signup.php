@@ -85,8 +85,8 @@ _BEGIN;
     $queryCreateUserFilesTable = "CREATE TABLE IF NOT EXISTS userFiles(
     username VARCHAR(32) NOT NULL,
     modelname VARCHAR(32) NOT NULL,
-    algtype INTEGER NOT NULL,
     PRIMARY KEY(username, modelname),
+    algtype INTEGER NOT NULL,
     dimension INTEGER NOT NULL);";
     
     $createTable = $conn->query($queryCreateUserFilesTable);

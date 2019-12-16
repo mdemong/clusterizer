@@ -390,11 +390,10 @@ _ERROR;
         $username = $_SESSION['username'];
         $preplace = $conn->prepare('INSERT INTO userFiles VALUES(?,?,?,?)');
         $preplace->bind_param('ssii', $username, $modelname, $algtype, $dimension);
-        
+
         $result = $preplace->execute();
         if($result){
             computeAlg($conn, $fileText);
-            
         }else{
             #incorrect file format
             echo "<h3>The text entered does not match the specified dimension type. Please sign in again and input the correct file.<h3>";  
@@ -458,7 +457,7 @@ _ERROR;
             $username = $_SESSION['username'];
             $modelname = mysql_entities_fix_string($conn, $_POST['modelname']);
             $str_centroids = json_encode($centroids);
-            $addEM = $preplace->execute();
+            $addKM = $preplace->execute();
             $preplace->close();
             if (!$addKM) die("<script>alert(\"Something went wrong! Please try signing up again.\");</script>");
         }
