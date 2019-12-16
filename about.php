@@ -12,7 +12,7 @@
     <meta name="author" content="">
     <link rel="icon" href="https://image.flaticon.com/icons/png/512/139/139690.png">
 
-    <title>Home</title>
+    <title>About Us</title>
 
     <!-- Bootstrap core CSS -->
     <link href="bootstrap-3.4.1-dist/css/bootstrap.min.css" rel="stylesheet">
@@ -38,10 +38,10 @@
         </div>
     <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-            <li class="active"><a href="index.php">Home</a></li>
+            <li><a href="index.php">Home</a></li>
             <li><a href="training.php">Training</a></li>
             <li><a href="testing.php">Testing</a></li>
-            <li><a href="about.php">About Us</a></li>
+            <li class="active"><a href="about.php">About Us</a></li>
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">User Options
                 <span class="caret"></span></a>
@@ -60,18 +60,20 @@
         <div class="starter-template">
             <img class="d-block mx-auto mb-4" src="https://image.flaticon.com/icons/png/512/139/139690.png" alt="" width="100" height="100">
             <h1>CLUSTERIZER</h1>
-            <h3> <br>Micah Demong | Gurdev Sihra | Katrina Tran</h3>
+            <h3> <br> Micah Demong | Gurdev Sihra | Katrina Tran</h3>
         </div>
         <div>
-            <h1>k-means clustering</h1>
-                <h3>...information about k-means clustering here...<h3>
-            <h1>expectation maximization</h1>
-                <h3>...information about expectation maximization here...<h3>
-            <h1>want to try it out?</h1>
-                <h3><a href = "signup.php">sign up here!</a><h3>
+            <h1>about us</h1>
+                <h2 class="text-center">Micah Demong</h2>
+                    <h3>...information about Micah here...<h3>
+                <h2 class="text-center">Gurdev Sihra</h2>
+                    <h3>...information about Gurdev here...<h3>
+                <h2 class="text-center">Katrina Tran</h2>
+                    <h3>...information about Katrina here...<h3>
         </div>
     </div>
     <!-- /.container -->
+
 
     <!-- Bootstrap core JavaScript
     ================================================== -->

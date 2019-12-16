@@ -1,8 +1,43 @@
 body {
     padding-top: 50px;
+    padding-bottom: 20px;
 }
 
 .starter-template {
     padding: 40px 15px;
     text-align: center;
+}
+
+.navbar {
+    margin-bottom: 20px;
+    min-height: 60px;
+    display: inline-block;
+}
+
+.navbar-brand {
+    padding: 0 15px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 1.4em;
+    display: inline-block;
+}
+
+.navbar-toggle {
+    /* (80px - button height 34px) / 2 = 23px */
+    margin-top: 23px;
+    padding: 9px 10px !important;
+}
+
+@media (min-width: 768px) {
+    .navbar-nav>li>a {
+        /* (80px - line-height of 27px) / 2 = 26.5px */
+        padding-top: 16.5px;
+        padding-bottom: 16.5px;
+        line-height: 27px;
+        font-size: 1.4em;
+    }
+}
+
+.dropdown-menu>li>a {
+    font-size: 1.4em;
 }

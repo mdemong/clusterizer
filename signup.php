@@ -32,7 +32,7 @@
 
       <div class="form-group">
         <label for="inputUsername" class="sr-only">Username</label>
-        <input type="text" name="inputUsername" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+        <input type="text" name="inputUsername" id="inputUsername" class="form-control" placeholder="Username (A-Z, a-z, -, _)" required autofocus>
       </div>
       
       <div class="form-group">
@@ -42,7 +42,7 @@
 
       <div class="form-group">
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" name="inputPassword" id="inputPassword" class="form-control" placeholder="Password" required>
+        <input type="password" name="inputPassword" id="inputPassword" class="form-control" placeholder="Password (> 10)" minlength="10" required>
       </div>
 
       <div class="form-group">
@@ -51,6 +51,12 @@
       </div>
   </form></body>
 _BEGIN;
+
+  define("SALT1_LEN", 4);
+  define("SALT2_LEN", 5);
+  define("STRING_BEG", 0);
+  define("STRING_MASH", "aeoxbxs!asd!fjkl%#weruip#zxvnm*1039475839201029384756574#*");
+  define("VALID_USERNAME", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-");
 
   require_once 'magic.php';
   $conn = new mysqli($hn, $un, $pw, $db);
@@ -72,9 +78,23 @@ _BEGIN;
   $createTable = $conn->query($queryCreateUserTable);
 	if (!$createTable)
 	{
-		# table could not be created
+    # table could not be created
 		die(errorPage());
-	}
+  }
+    
+    $queryCreateUserTable = "CREATE TABLE IF NOT EXISTS userFiles(
+    username VARCHAR(32) NOT NULL,
+    modelname VARCHAR(32) NOT NULL,
+    PRIMARY KEY(username, modelname),
+    dimension INTEGER NOT NULL);";
+    
+    $createTable = $conn->query($queryCreateUserTable);
+    if (!$createTable)
+    {
+        # table could not be created
+        die(errorPage());
+    }
+    #$createTable->close();
 
   if(((isset($_POST['inputName'])) && (!empty($_POST['inputName']))) && ((isset($_POST['inputUsername'])) && (!empty($_POST['inputUsername']))) && ((isset($_POST['inputEmail'])) && (!empty($_POST['inputEmail']))) && ((isset($_POST['inputPassword'])) && (!empty($_POST['inputPassword']))))
   {
@@ -104,33 +124,56 @@ _BEGIN;
   function addUser($conn)
   {
     $preplace = $conn->prepare('INSERT INTO user VALUES(?,?,?,?,?,?)');
-		$preplace->bind_param('ssssss', $name, $username, $email, $salt1, $salt2, $hashpass);
+		$preplace->bind_param('ssssss', $name, $username, $email, $salt1, $salt2, $token);
 
     $name = mysql_entities_fix_string($conn, $_POST['inputName']);
     $username = mysql_entities_fix_string($conn, $_POST['inputUsername']);
     $email = mysql_entities_fix_string($conn, $_POST['inputEmail']);
     $password = mysql_entities_fix_string($conn, $_POST['inputPassword']);
 
-    $str = "aeoxbxs!asd!fjkl%#weruip#zxvnm*1039475839201029384756574#*";
-    $shuf1 = str_shuffle($str);
-    $salt1 = substr($shuf1, 0, 4);
-    $shuf2 = str_shuffle($str);
-    $salt2 = substr($shuf2, 0, 5);
-    $token = hash('ripemd128', '$salt1$password$salt2');
+    $userNameValid = true;
+    for($i = 0; $i <strlen($username); $i++)
+    {
+      $pos = strpos(VALID_USERNAME, substr($username, $i, 1));
+      if ($pos === false) 
+      {
+        $userNameValid = false;
+      }
+    }
 
-    $addUser = $preplace->execute();
-		if (!$addUser)
-		{
-			# user could not be inserted
-			echo "Something went wrong! Please try signing up again.";
+    if($userNameValid === false)
+    {
+      die("<script>alert(\"Your username is in the wrong format. Please try signing up again.\");</script>");
     }
-    else {
-			echo "<script>alert(\"You are signed up! Go back to the main page.\");</script>";
+    else 
+    {
+      $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+      if (filter_var($email, FILTER_VALIDATE_EMAIL)) 
+      {
+        $shuf1 = str_shuffle(STRING_MASH);
+        $salt1 = substr($shuf1, STRING_BEG, SALT1_LEN);
+        $shuf2 = str_shuffle(STRING_MASH);
+        $salt2 = substr($shuf2, STRING_BEG, SALT2_LEN);
+        $token = hash('ripemd128', "$salt1$password$salt2");
+
+        $addUser = $preplace->execute();
+		    if (!$addUser)
+		    {
+          # user could not be inserted
+          die("<script>alert(\"Something went wrong! Please try signing up again.\");</script>");
+        }
+        else {
+			    die("<script>alert(\"You are signed up! Go back to the main page.\");</script>");
+        }
+        $addUser->close();
+      }
+      else 
+      {
+        die("<script>alert(\"Your email is in the wrong format. Please try signing up again.\");</script>");
+      }
     }
-    $addUser->close();
   }
 
-  #$createTable->close();
 	$conn->close();
   echo "</html>";
 ?>
