@@ -32,7 +32,7 @@
 
       <div class="form-group">
         <label for="inputUsername" class="sr-only">Username</label>
-        <input type="text" name="inputUsername" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+        <input type="text" name="inputUsername" id="inputUsername" class="form-control" placeholder="Username (A-Z, a-z, -, _)" required autofocus>
       </div>
       
       <div class="form-group">
@@ -42,7 +42,7 @@
 
       <div class="form-group">
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" name="inputPassword" id="inputPassword" class="form-control" placeholder="Password" minlength="10" required>
+        <input type="password" name="inputPassword" id="inputPassword" class="form-control" placeholder="Password (> 10)" minlength="10" required>
       </div>
 
       <div class="form-group">
