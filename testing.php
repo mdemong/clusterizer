@@ -306,7 +306,7 @@ _ERROR;
             #algtype = 0 = kmeans
             
             if($algtype == 1) {
-                testEM($conn, $dim, $mn, $algtype);
+                testEM($conn, $dim, $mn, $algtype, $text);
             }
 
         }
@@ -317,7 +317,7 @@ _ERROR;
         }
     }
 
-    function testEM($conn, $dim, $mn, $algtype) {
+    function testEM($conn, $dim, $mn, $algtype, $text) {
         $query = "SELECT * FROM (em NATURAL JOIN userFiles)
                     WHERE username=(?) AND modelname=(?);";
         $preplace = $conn->prepare($query);
@@ -330,9 +330,22 @@ _ERROR;
         if(!$result) die("<script>alert(\"Something went wrong! Please try again.\");</script>");
 
         $arr = $result->fetch_assoc();
+
+        $resarr = [];
+        $resarr['dist'] = $arr['distributions'];
+        $resarr['points'] = $text;
+        $resarr['dimension'] = $arr['dimension'];
+
         
-        echo $arr['dimension']. '<br>';
-        echo $arr['distributions']. '<br>';
+        $PATH_TO_SCRIPT = "scripts/em.py";
+        $command = escapeshellcmd('python ' . $PATH_TO_SCRIPT . " \"" . json_encode($resarr) . "\"");
+        $output = [];
+        $retcode = -1;
+        
+        exec($command, $output, $retcode);
+        if($retcode !== 0) echo "Sorry, something went wrong. Please try again.<br>";
+        
+        print($output[0]);
 
         $result->close();
         $preplace->close();

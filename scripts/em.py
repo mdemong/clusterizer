@@ -248,9 +248,9 @@ def is_json(myjson):
 
 if(is_json(sys.argv[1])): 
     json_obj = json.loads(sys.argv[1])
-    dists = json_obj['dists']
-    points = json_obj['points']
-    k = json_obj['k']
+    dists = json_obj['dist']
+    points = input_to_array(json_obj['points'])
+    k = json_obj['dimension']
     result = expectation_maximization(num, pts, dists)
     print(json.dumps(result, cls=NumpyEncoder))
 else: 
@@ -265,7 +265,7 @@ else:
         result = expectation_maximization(num, pts)
         print(json.dumps(result, cls=NumpyEncoder))
     else:
-    print("The input values are too short: ", sys.argv[1])
+        print("The input values are too short: ", sys.argv[1])
 
 sys.stdout.flush
 sys.stdin.close
