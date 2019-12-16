@@ -386,13 +386,14 @@ _ERROR;
         $c = $row['centroids'];
         
         $combine = $fileText."Z".$c;
+        
+        echo $c;
 
         $PATH_TO_SCRIPT = "scripts/k-means-testing.py";
         // There also exists an escapeshellcmd() function.
         $command = escapeshellcmd('python ' . $PATH_TO_SCRIPT . " \"" . $combine . "\"");
         $output = [];
         $retcode = -1;
-            
         exec($command, $output, $retcode);
         if($retcode !== 0) echo "Error $retcode<br>";
         echo implode("<br>",$output);
