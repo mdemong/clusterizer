@@ -11,62 +11,74 @@
     session_start();
     if (isset($_SESSION['username']))
 	{
-        $username = $_SESSION['username'];
-        $password = $_SESSION['password'];
-        $name = $_SESSION['name'];
+        if ($_SESSION['check'] != hash('ripemd128', $_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']))
+        {
+            different_user();
+        }
+        else 
+        {
+            $username = $_SESSION['username'];
+            $password = $_SESSION['password'];
+            $name = $_SESSION['name'];
+
+            echo <<<_BEGIN
+            <!DOCTYPE html>
+            <html lang="en">
         
-        echo <<<_BEGIN
-        <!DOCTYPE html>
-        <html lang="en">
+            <head>
+                <meta charset="utf-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+                <meta name="description" content="">
+                <meta name="author" content="">
+                <link rel="icon" href="https://image.flaticon.com/icons/png/512/139/139690.png">
         
-        <head>
-            <meta charset="utf-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-            <meta name="description" content="">
-            <meta name="author" content="">
-            <link rel="icon" href="https://image.flaticon.com/icons/png/512/139/139690.png">
+                <title>Training</title>
         
-            <title>Training</title>
+                <!-- Bootstrap core CSS -->
+                <link href="bootstrap-3.4.1-dist/css/bootstrap.min.css" rel="stylesheet">
         
-            <!-- Bootstrap core CSS -->
-            <link href="bootstrap-3.4.1-dist/css/bootstrap.min.css" rel="stylesheet">
+                <!-- Custom styles for this template -->
+                <link href="index.css" rel="stylesheet">
         
-            <!-- Custom styles for this template -->
-            <link href="index.css" rel="stylesheet">
+                <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+                <!--[if lt IE 9]>
+                    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+                    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+                <![endif]-->
+            </head>
         
-            <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-            <!--[if lt IE 9]>
-              <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-              <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-            <![endif]-->
-        </head>
-        
-        <body>
-            <nav class="navbar navbar-inverse navbar-fixed-top">
+            <body>
+                <nav class="navbar navbar-inverse navbar-fixed-top">
                 <div class="container">
                     <div class="navbar-header">
+                        <a class="navbar-brand" href="index.php"> Clusterizer</a>
                         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                  </button>
-                        <a class="navbar-brand" href="index.php">Clusterizer</a>
+                        <span class="sr-only">Toggle navigation</span>
+                        </button>
                     </div>
                     <div id="navbar" class="collapse navbar-collapse">
                         <ul class="nav navbar-nav">
                             <li><a href="index.php">Home</a></li>
                             <li class="active"><a href="training.php">Training</a></li>
                             <li><a href="testing.php">Testing</a></li>
+                            <li><a href="about.php">About Us</a></li>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">User Options
+                                <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="signin.php">Sign In</a></li>
+                                    <li><a href="logout.php">Log Out</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </div>
                     <!--/.nav-collapse -->
                 </div>
-            </nav>
+                </nav>
         
-            <div class="container">
+                <div class="container">
                 <div class="starter-template">
                     <img class="d-block mx-auto mb-4" src="https://image.flaticon.com/icons/png/512/139/139690.png" alt="" width="100s" height="100">
                     <h1>Training</h1>
@@ -146,68 +158,69 @@
             <script src="../../dist/js/bootstrap.min.js"></script>
             <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
             <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
-_BEGIN;
         
-
-
-        #model name with file upload only
-        if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_FILES['file1'])) && (!empty($_FILES['file1']['tmp_name']))) && (empty($_POST['textarea']))
-           )
-        {
-            $number = $_POST['clusters'];
-            $num = mysql_entities_fix_string($conn, $number);
-            if(is_numeric($num) && ((int)$num) > 0){
-                $type = $_FILES['file1']['type'];
-                if ($type === "text/plain")
-                {
-                    enterFile($conn);
-                }else {
-                    #incorrect file format
-                    echo "<h3>Incorrect file format! Please try again with a .txt file.<h3>";
-                }
-            }else {
-                #incorrect file format
-                echo "<h3>Incorrect cluster amount! It must be an integer above 0.<h3>";
-                
-            }
-        }
-   
-        #model name with text upload only
-        if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_POST['textarea'])) && (!empty($_POST['textarea']))) && (empty($_FILES['file1']['tmp_name'])))
-        {
-            $number = $_POST['clusters'];
-            $num = mysql_entities_fix_string($conn, $number);
-            if(is_numeric($num) && ((int)$num) > 0){
-                enterText($conn);
-            }else {
-                #incorrect file format
-                echo "<h3>Incorrect cluster amount! It must be an integer above 0.<h3>";
-            }
-        }
+            <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+            <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+            <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">        
+_BEGIN;
     
-        #model name text and file chosen --> choose file
-        if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_FILES['file1'])) && (!empty($_FILES['file1']['tmp_name']))) && ((isset($_POST['textarea'])) && (!empty($_POST['textarea']))))
-        {
-            $number = $_POST['clusters'];
-            $num = mysql_entities_fix_string($conn, $number);
-            if(is_numeric($num) && ((int)$num) > 0){
-                $type = $_FILES['file1']['type'];
-                if ($type === "text/plain")
-                {
-                    enterFile($conn);
+            #model name with file upload only
+            if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_FILES['file1'])) && (!empty($_FILES['file1']['tmp_name']))) && (empty($_POST['textarea'])))
+            {
+                $number = $_POST['clusters'];
+                $num = mysql_entities_fix_string($conn, $number);
+                if(is_numeric($num) && ((int)$num) > 0){
+                    $type = $_FILES['file1']['type'];
+                    if ($type === "text/plain")
+                    {
+                        enterFile($conn);
+                    }else {
+                        #incorrect file format
+                        echo "<h3>Incorrect file format! Please try again with a .txt file.<h3>";
+                    }
                 }else {
                     #incorrect file format
-                    echo "<h3>Incorrect file format! Please try again with a .txt file.<h3>";
+                    echo "<h3>Incorrect cluster amount! It must be an integer above 0.<h3>";
                 }
-            }else {
-                #incorrect file format
-                echo "<h3>Incorrect cluster amount! It must be an integer above 0.<h3>";
+            }
+   
+            #model name with text upload only
+            if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_POST['textarea'])) && (!empty($_POST['textarea']))) && (empty($_FILES['file1']['tmp_name'])))
+            {
+                $number = $_POST['clusters'];
+                $num = mysql_entities_fix_string($conn, $number);
+                if(is_numeric($num) && ((int)$num) > 0){
+                    enterText($conn);
+                }else {
+                    #incorrect file format
+                    echo "<h3>Incorrect cluster amount! It must be an integer above 0.<h3>";
+                }
+            }
+    
+            #model name text and file chosen --> choose file
+            if(((isset($_POST['modelname'])) && (!empty($_POST['modelname']))) && ((isset($_FILES['file1'])) && (!empty($_FILES['file1']['tmp_name']))) && ((isset($_POST['textarea'])) && (!empty($_POST['textarea']))))
+            {
+                $number = $_POST['clusters'];
+                $num = mysql_entities_fix_string($conn, $number);
+                if(is_numeric($num) && ((int)$num) > 0){
+                    $type = $_FILES['file1']['type'];
+                    if ($type === "text/plain")
+                    {
+                        enterFile($conn);
+                    }else {
+                        #incorrect file format
+                        echo "<h3>Incorrect file format! Please try again with a .txt file.<h3>";
+                    }
+                }else {
+                    #incorrect file format
+                    echo "<h3>Incorrect cluster amount! It must be an integer above 0.<h3>";
+                }
             }
         }
     }
-    else {
-        session_unset();
-        echo "<br><br><br><h1>Please <a href='signin.php'>click here</a> to log in.</h1>";
+    else 
+    {
+        echo "<br><br><br><h1>You do not have access to this page because you are not logged in. Please <a href='signin.php'>click here</a> to log in.</h1>";
     }
 
     function errorPage()
@@ -228,7 +241,21 @@ _BEGIN;
 			$string = stripslashes($string);
 		}
 		return $conn->real_escape_string($string);
-	}
+    }
+    
+    function different_user()
+    {
+        destroy_session_and_data();
+        echo "Something went wrong! Please <a href='signin.php'>click here</a> to log in again.</h1>";
+    }
+
+    function destroy_session_and_data()
+    {
+        session_start();
+        $_SESSION = array();
+        setcookie(session_name(), '', time() - 2592000, '/');
+        session_destroy();
+    }
 
     function enterFile($conn)
     {
